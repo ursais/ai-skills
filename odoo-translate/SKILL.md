@@ -12,7 +12,9 @@ description: >
 
 Translate `$module` (and keep `i18n/` healthy). **Prefer OCA Weblate** when the addon is on OCA; otherwise manage files under `$module/i18n/` locally.
 
-**Platform (shared):** [oca-conventions](../shared/oca-conventions.md) · [git-commit](../shared/git-commit.md) · [git-one-module](../shared/git-one-module.md) · [ursais-remote](../shared/ursais-remote.md) · [oca-pr](../shared/oca-pr.md)
+**Profile:** [contributor](../shared/contributor.md) — read before push. Stop if `fork_owner` is still `YOUR_GITHUB_ORG`.
+
+**Platform (shared):** [oca-conventions](../shared/oca-conventions.md) · [git-commit](../shared/git-commit.md) · [git-one-module](../shared/git-one-module.md) · [fork-remote](../shared/fork-remote.md) · [oca-pr](../shared/oca-pr.md)
 
 ## Invocation
 
@@ -106,7 +108,7 @@ msgmerge -U "$module/i18n/${lang}.po" "$POT"
 
 ## Step 3 — Commit + report
 
-When local files change (non-Weblate or `.pot` only on a ursais PR):
+When local files change (non-Weblate or `.pot` only on a fork PR):
 
 ```bash
 git add "$module/i18n/"
@@ -120,7 +122,7 @@ EOF
 
 Use a clearer subject if the commit is language-only, e.g. `[UPD] ${module}: ${lang} translation`, still tag `[UPD]`.
 
-Push/PR via [ursais-remote](../shared/ursais-remote.md) + [oca-pr](../shared/oca-pr.md) only when the change belongs in a module PR (template update, private repo, or series not on Weblate).
+Push/PR via [fork-remote](../shared/fork-remote.md) + [oca-pr](../shared/oca-pr.md) only when the change belongs in a module PR (template update, private repo, or series not on Weblate).
 
 ### Report
 

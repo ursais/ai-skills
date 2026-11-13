@@ -7,15 +7,15 @@ Read the version guide first (and **every intermediate** guide when jumping vers
 - 20.0 → [migration-20.0.md](migration-20.0.md) · [OCA wiki](https://github.com/OCA/maintainer-tools/wiki/Migration-to-version-20.0)
 - Other → OCA wiki `Migration-to-version-${target_ver}`
 
-Shared polish (icon, GML, readme, headers, demo): [../../shared/oca-conventions.md](../../shared/oca-conventions.md)
+Shared polish (icon, readme, headers, demo): [../../shared/oca-conventions.md](../../shared/oca-conventions.md)
 
 ## Universal checklist
 
 1. Bump `'version': '${target_ver}.1.0.0'` in `__manifest__.py`
 2. Ensure **`development_status`** and **`maintainers`** are set ([shared/oca-conventions.md](../../shared/oca-conventions.md))
 3. Remove `$module/migrations/` if present
-4. Do **not** change copyright years or original authors (except OSI→GML rename)
-5. Apply [shared/oca-conventions.md](../../shared/oca-conventions.md) (icon, GML, readme, headers, demo split)
+4. Do **not** change copyright years or original authors
+5. Apply [shared/oca-conventions.md](../../shared/oca-conventions.md) (icon, readme, headers, demo split)
 6. Apply version-specific framework changes from the migration guide
 7. Add enough unit tests for coverage **> 99%** before `[MIG]` (below)
 8. Update i18n — separate `[UPD]` commit (below)

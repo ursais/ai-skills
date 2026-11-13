@@ -3,7 +3,7 @@ name: odoo-dev
 description: >
   Develop a new Odoo OCA addon from a GitHub issue or a design document (Word file or
   SharePoint URL) — analyze requirements, scaffold, implement,
-  tests (coverage >99%), readme/i18n, and open a PR from ursais to OCA. Use when building a new
+  tests (coverage >99%), readme/i18n, and open a PR from your fork to OCA. Use when building a new
   OCA module or implementing a feature issue. One module per branch. Not for migration
   (odoo-migrate), bug fixes (odoo-fix), PR review (odoo-review),
   or estimation (odoo-estimator).
@@ -11,9 +11,11 @@ description: >
 
 # OCA New Module Development
 
-Build a **new** OCA addon from a GitHub issue or a design document, then PR from `ursais` to `OCA/$repo`.
+Build a **new** OCA addon from a GitHub issue or a design document, then PR from `$fork_owner` to `OCA/$repo`.
 
-**Platform (shared):** [validation-gate](../shared/validation-gate.md) · [git-commit](../shared/git-commit.md) · [git-one-module](../shared/git-one-module.md) · [ursais-remote](../shared/ursais-remote.md) · [oca-conventions](../shared/oca-conventions.md) · [oca-pr](../shared/oca-pr.md) · [oca-merge-policy](../shared/oca-merge-policy.md) · [testing](../shared/testing.md)
+**Profile:** [contributor](../shared/contributor.md) — read before clone, push, or copyright. Stop if `fork_owner` or the author fields are still `YOUR_*`.
+
+**Platform (shared):** [validation-gate](../shared/validation-gate.md) · [git-commit](../shared/git-commit.md) · [git-one-module](../shared/git-one-module.md) · [fork-remote](../shared/fork-remote.md) · [oca-conventions](../shared/oca-conventions.md) · [oca-pr](../shared/oca-pr.md) · [oca-merge-policy](../shared/oca-merge-policy.md) · [testing](../shared/testing.md)
 
 ## Invocation
 
@@ -35,7 +37,7 @@ Step 3  Scaffold
 Step 4  Implement
 Step 5  OCA polish (shared conventions)
 Step 6  Tests + i18n + validation gate
-Step 7  Push ursais
+Step 7  Push fork
 Step 8  Open PR
 Step 9  CI until green
 Step 10 Report
@@ -48,7 +50,7 @@ Working directory: `/tmp/oca-dev/$repo/$repo`
 1. One module per branch ([shared/git-one-module.md](../shared/git-one-module.md))  
 2. Do not invent scope — ask if the issue is unclear  
 3. Validation gate before every commit/push  
-4. Push to ursais only ([shared/ursais-remote.md](../shared/ursais-remote.md))  
+4. Push to `$fork_owner` only ([shared/fork-remote.md](../shared/fork-remote.md))  
 5. Merge per [shared/oca-merge-policy.md](../shared/oca-merge-policy.md)
 
 ## Step 0 — Inputs
@@ -70,7 +72,7 @@ gh issue view "$ISSUE_NUMBER" --repo "OCA/$repo" --json title,body,labels,milest
 
 ```bash
 # GitHub issue path only — skip the comment when the input is a design document
-gh issue comment "$ISSUE_NUMBER" --repo "OCA/$repo" --body "Working on this in a PR from ursais."
+gh issue comment "$ISSUE_NUMBER" --repo "OCA/$repo" --body "Working on this in a PR from ${fork_owner}."
 mkdir -p /tmp/oca-dev/$repo && cd /tmp/oca-dev/$repo
 git clone https://$GITHUB_TOKEN@github.com/OCA/$repo -b $target_ver --depth=50
 cd $repo
@@ -104,7 +106,7 @@ EOF
 # optional [ADD] tests / [UPD] pot after gate — same Assisted-by trailer ([shared/git-commit.md](../shared/git-commit.md))
 ```
 
-Push: [shared/ursais-remote.md](../shared/ursais-remote.md)  
+Push: [shared/fork-remote.md](../shared/fork-remote.md)  
 PR: [shared/oca-pr.md](../shared/oca-pr.md) — title `[${target_ver}][ADD] ${module}: …`, labels `needs review` + `series:` + `mod:`, **milestone `$target_ver`** (never skip), body with **## Test scenario** + deps. GitHub issue: comment `$issue_url`. Design document: link the SharePoint URL or name the Word file in the PR body.
 
 ## Step 10 — Report

@@ -19,7 +19,7 @@ See [relevance-score.md](relevance-score.md). Never post “worth reviewing: yes
 - [ ] Do **not** require PR Test scenario when USAGE already covers a fix/IMP of an existing flow
 - [ ] New/changed user-visible behavior → prefer USAGE update in the PR over a one-off PR scenario
 - [ ] Not draft
-- [ ] Prefer score ≥ 70 before assigning `max3903`; if not ready → contributor checklist only
+- [ ] Prefer score ≥ 70 before assigning `$human_tester`; if not ready → contributor checklist only
 
 ## OCA conventions
 
@@ -28,7 +28,7 @@ See also [../shared/oca-conventions.md](../shared/oca-conventions.md).
 - [ ] `__manifest__.py`: `development_status`, `maintainers` (non-empty), `license` AGPL-3
 - [ ] Depends list sensible; no unexplained new hard deps
 - [ ] Copyright / AGPL headers on new or substantially edited `.py` files
-- [ ] CONTRIBUTORS / GML credits when GML authored or migrated
+- [ ] CONTRIBUTORS entry for the profile author when they authored or migrated the change
 - [ ] Edits only under `readme/*.md` (not hand-edited `README.rst` / `static/description/index.html`)
 - [ ] Icon present for new modules; demo files one model per XML
 - [ ] No `i18n/en.po`; `.pot` updates not wrongly mixed into unrelated commits when reviewing commit list

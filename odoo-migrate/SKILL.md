@@ -1,8 +1,8 @@
 ---
 name: odoo-migrate
 description: >
-  Migrate an OCA module between Odoo versions and open a PR from ursais to OCA. Use when migrating
-  or porting an OCA module (e.g. to 17.0/18.0/19.0/20.0), creating a migration branch in ursais, or
+  Migrate an OCA module between Odoo versions and open a PR from your fork to OCA. Use when migrating
+  or porting an OCA module (e.g. to 17.0/18.0/19.0/20.0), creating a migration branch in your fork, or
   opening an OCA migration PR. One module per branch and PR. Runs pre-commit, tests, and coverage
   (>99%) before every commit/push. Not for new modules (odoo-dev), bug fixes (odoo-fix),
   or PR review (odoo-review).
@@ -10,9 +10,11 @@ description: >
 
 # OCA Module Migration
 
-Migrate `$module` in `OCA/$repo` from `$source_ver` → `$target_ver`, push from `ursais`, open PR, CI green.
+Migrate `$module` in `OCA/$repo` from `$source_ver` → `$target_ver`, push from `$fork_owner`, open PR, CI green.
 
-**Platform (shared):** [validation-gate](../shared/validation-gate.md) · [git-commit](../shared/git-commit.md) · [git-one-module](../shared/git-one-module.md) · [ursais-remote](../shared/ursais-remote.md) · [oca-conventions](../shared/oca-conventions.md) · [oca-pr](../shared/oca-pr.md) · [oca-merge-policy](../shared/oca-merge-policy.md) · [testing](../shared/testing.md)
+**Profile:** [contributor](../shared/contributor.md) — read before clone, push, or copyright. Stop if `fork_owner` or the author fields are still `YOUR_*`.
+
+**Platform (shared):** [validation-gate](../shared/validation-gate.md) · [git-commit](../shared/git-commit.md) · [git-one-module](../shared/git-one-module.md) · [fork-remote](../shared/fork-remote.md) · [oca-conventions](../shared/oca-conventions.md) · [oca-pr](../shared/oca-pr.md) · [oca-merge-policy](../shared/oca-merge-policy.md) · [testing](../shared/testing.md)
 
 ## Workflow
 
@@ -21,7 +23,7 @@ Step 0  Inputs
 Step 1  Clone + verify module on $source_ver
 Step 2  Branch + git am (-- $module) + same-author squash
 Step 3  Migrate + conventions + tests (>99% coverage) → [MIG] / [UPD]
-Step 4  Push once to ursais
+Step 4  Push once to fork
 Step 5  Open PR (migration labels, deps in body, /ocabot)
 Step 6  CI until green
 Step 7  Report
@@ -53,7 +55,7 @@ Working directory: `/tmp/oca-mig/$repo/$repo`
 | `$module` | `mgmtsystem_action` | One module only |
 | `$source_ver` | `18.0` | Default: `$target_ver - 1` |
 | `$target_ver` | `20.0` | Target branch (17.0 / 18.0 / 19.0 / 20.0 supported) |
-| `$PR_ASSIGNEE` | `max3903` | Default: `gh api user -q .login` |
+| `$PR_ASSIGNEE` | profile `maintainer` | Blank maintainer: `gh api user -q .login` |
 
 Multiple modules → separate full runs.
 
@@ -108,7 +110,7 @@ EOF
 
 ## Step 4 — Push
 
-[shared/ursais-remote.md](../shared/ursais-remote.md) — push `$BRANCH` once.
+[shared/fork-remote.md](../shared/fork-remote.md) — push `$BRANCH` once.
 
 ## Step 5 — PR
 

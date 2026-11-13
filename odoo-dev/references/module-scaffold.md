@@ -35,18 +35,18 @@ Add `wizards/`, `reports/`, `controllers/` only when the issue requires them.
 ## `__manifest__.py` template
 
 ```python
-# Copyright (C) 2026 Gray Matter Logic (<https://www.graymatterlogic.com>).
+# Copyright (C) YYYY $author_name (<$author_url>).
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 {
     "name": "Human Readable Name",
     "version": "${target_ver}.1.0.0",
-    "author": "Gray Matter Logic, Odoo Community Association (OCA)",
+    "author": "$author_name, Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/${repo}",
     "license": "AGPL-3",
     "category": "Category From Reference Module",
     "development_status": "Beta",
-    "maintainers": ["max3903"],
+    "maintainers": ["$maintainer"],
     "depends": ["base"],
     "data": [
         "security/ir.model.access.csv",
@@ -57,7 +57,7 @@ Add `wizards/`, `reports/`, `controllers/` only when the issue requires them.
 }
 ```
 
-- Set `maintainers` to the author’s GitHub login (or maintainers named in the issue)
+- Set `maintainers` to `$maintainer` from the contributor profile (or maintainers named in the issue)
 - Match `category`, `depends`, and `development_status` style from a reference module on `origin/$target_ver`
 - Order `data` keys: security → data → views → menus → reports
 - List each demo file separately in `"demo"` (one per model)
@@ -81,7 +81,7 @@ from . import models
 ## Model stub
 
 ```python
-# Copyright (C) 2026 Gray Matter Logic (<https://www.graymatterlogic.com>).
+# Copyright (C) YYYY $author_name (<$author_url>).
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 from odoo import fields, models

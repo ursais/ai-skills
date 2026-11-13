@@ -20,7 +20,7 @@ Evaluate `$pr_url` against merge gates. If all pass, **merge** (OCA: ocabot comm
 ```
 /odoo-merge https://github.com/OCA/field-service/pull/1234
 /odoo-merge OCA/field-service#1234
-/odoo-merge https://github.com/ursais/some-repo/pull/99
+/odoo-merge https://github.com/example/some-repo/pull/99
 ```
 
 Ask for `$pr_url` if missing. Requires `gh` authenticated with permission to comment (OCA) or merge (non-OCA).

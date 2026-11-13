@@ -81,7 +81,7 @@ OpenUpgrade data-model diffs: https://github.com/OCA/OpenUpgrade (`upgrade_analy
 
 * `$repo`: the OCA repository hosting the module
 * `$module`: the name of the module you want to migrate
-* `$user_org`: your GitHub login or organization name (for this skill: `ursais`)
+* `$user_org`: `$fork_owner` from [contributor.md](../../shared/contributor.md)
 
 **Full process**
 
@@ -146,4 +146,4 @@ git am --continue
 
 ## Skill workflow note
 
-This repo’s `/odoo-migrate` skill still owns: one module per branch, validation gate (>99% coverage), separate `[UPD]` pot, push to **ursais**, PR labels/milestone, `/ocabot migration $module`. Use this guide for **framework** tasks inside Step 3.
+This repo’s `/odoo-migrate` skill still owns: one module per branch, validation gate (>99% coverage), separate `[UPD]` pot, push to **`$fork_owner`**, PR labels/milestone, `/ocabot migration $module`. Use this guide for **framework** tasks inside Step 3.

@@ -96,7 +96,7 @@
 
 * `$repo`: the OCA repository hosting the module
 * `$module`: the name of the module you want to migrate
-* `$user_org`: your GitHub login or organization name
+* `$user_org`: `$fork_owner` from [contributor.md](../../shared/contributor.md)
 
 **Full process**
 

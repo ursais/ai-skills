@@ -9,14 +9,16 @@ Every addon `__manifest__.py` **must** include:
 | Key | Type | Example | Notes |
 |-----|------|---------|-------|
 | `development_status` | string | `"Beta"` | One of: `Alpha`, `Beta`, `Production/Stable`, `Mature` |
-| `maintainers` | list of GitHub logins | `["max3903"]` | OCA key is **`maintainers`** (plural) |
+| `maintainers` | list of GitHub logins | `["$maintainer"]` | OCA key is **`maintainers`** (plural) |
 
 ```python
 "development_status": "Beta",
-"maintainers": ["max3903"],
+"maintainers": ["$maintainer"],
 ```
 
-- New modules: set both in the scaffold (default `Beta`; maintainer = PR author GitHub login unless the issue names someone else).
+`$maintainer` is `maintainer` in [contributor.md](contributor.md). When that field is blank, use `gh api user -q .login`.
+
+- New modules: set both in the scaffold (default `Beta`; maintainer from the profile unless the issue names someone else).
 - Migrations: if missing on `$source_ver`, **add** them before `[MIG]` / before opening the PR.
 - Prefer matching sibling modules on `origin/$target_ver` for `development_status`.
 
@@ -32,28 +34,22 @@ Every addon `__manifest__.py` **must** include:
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 ```
 
-New files from GML:
+New files you add use [contributor.md](contributor.md). `$author_name` and `$author_url` must be filled in. Year is the current calendar year. Do not rewrite copyright on files you did not author.
 
 ```python
-# Copyright (C) 2026 Gray Matter Logic (<https://www.graymatterlogic.com>).
+# Copyright (C) YYYY $author_name (<$author_url>).
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 ```
 
-## Gray Matter Logic credits
+## Credits
 
 Edit `$module/readme/CONTRIBUTORS.md` (source of truth); regenerate via pre-commit.
 
-| Legacy | Replace with |
-|--------|----------------|
-| Open Source Integrators | Gray Matter Logic |
-| opensourceintegrators.com URLs | https://www.graymatterlogic.com |
-| mchambreuil@opensourceintegrators.com | maxime.chambreuil@graymatterlogic.com |
-
-Add if missing:
+When you author or migrate a module, add the profile author if that person is not already listed. Do not replace other authors.
 
 ```markdown
-- [Gray Matter Logic](https://www.graymatterlogic.com):
-  - Maxime Chambreuil \<<maxime.chambreuil@graymatterlogic.com>\>
+- [$author_name]($author_url):
+  - $author_name \<<$author_email>\>
 ```
 
 ## Readme fragments

@@ -1,6 +1,6 @@
 # OCA PR Packaging and CI (shared)
 
-Used after local validation and push to ursais. Verify [git-one-module.md](git-one-module.md) first.
+Used after local validation and push to `$fork_owner` ([fork-remote.md](fork-remote.md)). Verify [git-one-module.md](git-one-module.md) first. `$fork_owner` comes from [contributor.md](contributor.md).
 
 ## Standard labels
 
@@ -11,7 +11,7 @@ Used after local validation and push to ursais. Verify [git-one-module.md](git-o
 | `series:${target_ver}` | **`needs fixing`** when requesting changes (keep `needs review`) |
 | `mod:${module}` only | |
 
-Assignee: `$PR_ASSIGNEE` (default `gh api user -q .login`).  
+Assignee: `$PR_ASSIGNEE` (profile `maintainer`, otherwise `gh api user -q .login`).  
 Reviewer: `$PR_REVIEWER` (default `$PR_ASSIGNEE`).
 
 Use **`gh api` REST**, not `gh pr edit` — `gh pr edit` can fail on the Projects Classic GraphQL deprecation (including for milestones).
@@ -21,7 +21,7 @@ Create missing labels before POSTing them (`mod:$module`, `needs fixing`, …). 
 If the `$target_ver` milestone does not exist, **create** it (open), then assign. Verify after PATCH that `.milestone.title == $target_ver`.
 
 ```bash
-PR_ASSIGNEE="${PR_ASSIGNEE:-$(gh api user -q .login)}"
+PR_ASSIGNEE="${PR_ASSIGNEE:-${maintainer:-$(gh api user -q .login)}}"
 PR_REVIEWER="${PR_REVIEWER:-$PR_ASSIGNEE}"
 
 # Milestone — required; title must equal $target_ver (e.g. 19.0)
@@ -99,7 +99,7 @@ fi
 
 ```bash
 PR_URL=$(gh pr create --repo "OCA/$repo" \
-  --head "ursais:${BRANCH}" \
+  --head "${fork_owner}:${BRANCH}" \
   --base "$target_ver" \
   --title "$PR_TITLE" \
   --body "$PR_BODY")
@@ -207,7 +207,7 @@ gh pr checks "$PR_NUMBER" --repo "OCA/$repo" --watch --interval 30
 
 1. Wait until all checks finish  
 2. Fix **in-scope** failures locally → [validation-gate.md](validation-gate.md)  
-3. One `[FIX]` commit (or amend if fix skill requires single commit) → **one push** to ursais — trailer **`Assisted-by: Cursor`**, never `Co-authored-by: Cursor` ([git-commit.md](git-commit.md))  
+3. One `[FIX]` commit (or amend if fix skill requires single commit) → **one push** to `fork` — trailer **`Assisted-by: Cursor`**, never `Co-authored-by: Cursor` ([git-commit.md](git-commit.md))  
 4. Max 3 attempts per same failure  
 
 | Check | Action |

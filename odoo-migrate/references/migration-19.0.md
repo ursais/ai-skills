@@ -80,7 +80,7 @@ git commit -m "$(cat <<'EOF'
 Assisted-by: Cursor <cursoragent@cursor.com>
 EOF
 )"
-git push ursais 19.0-mig-$module --set-upstream
+git push fork 19.0-mig-$module --set-upstream
 ```
 
 PR title: `[19.0][MIG] <module>: Migration to 19.0`.
