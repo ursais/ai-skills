@@ -1,0 +1,17 @@
+---
+description: After every git commit, replace Co-authored-by Cursor with Assisted-by automatically — never ask
+alwaysApply: true
+---
+
+# Assisted-by commit trailer
+
+Never leave `Co-authored-by: Cursor <cursoragent@cursor.com>` (or any Cursor/cursoragent Co-authored-by) on a commit.
+
+**After every `git commit` you make:**
+
+1. Run `git log -1 --format=%B` after every commit and every amend.
+2. If the message contains `Co-authored-by: Cursor`, rewrite immediately: same subject/body, replace that trailer with `Assisted-by: Cursor <cursoragent@cursor.com>` (no duplicate Assisted-by). If `git commit --amend` re-injects it, use `git commit-tree` + `git reset --soft` (see `shared/git-commit.md`).
+3. If that commit is already on the remote **feature** branch, `git push --force-with-lease` right away. Never force-push `main`/`master`.
+4. Do this automatically — never ask the user whether to replace Co-authored-by with Assisted-by.
+
+Prefer putting `Assisted-by` in the original commit message. Full policy: `shared/git-commit.md`.
