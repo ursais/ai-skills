@@ -9,7 +9,7 @@ ai-skills/
 ├── shared/                 # Platform policy (imported by workflow skills)
 ├── odoo-dev/               # New addon from a GitHub issue or design doc
 ├── odoo-migrate/           # Port module to a new Odoo series
-├── odoo-fix/               # Bug fix from a GitHub issue or helpdesk ticket
+├── odoo-fix/               # Bug fix from a GitHub issue
 ├── odoo-review/            # Review an OCA PR (relevance, gates, CI, Bugbot/security/perf)
 ├── odoo-merge/             # Merge a PR when gates pass (ocabot or GitHub API)
 ├── odoo-rebase/            # Rebase a PR head on your fork
@@ -24,7 +24,7 @@ ai-skills/
 |------|--------|
 | New module from a GitHub issue or design doc | `odoo-dev` |
 | Port existing module to N.0 | `odoo-migrate` |
-| Bug / CI / traceback from an issue or helpdesk ticket | `odoo-fix` |
+| Bug / CI / traceback from a GitHub issue | `odoo-fix` |
 | Review an OCA module PR | `odoo-review` |
 | Merge a PR (gates + ocabot / API) | `odoo-merge` |
 | Rebase a PR head on your fork | `odoo-rebase` |
@@ -59,7 +59,7 @@ cp -r /tmp/ai-skills/odoo-rebase ~/.cursor/skills/
 cp -r /tmp/ai-skills/odoo-translate ~/.cursor/skills/
 ```
 
-Edit `~/.cursor/skills/shared/contributor.md` once. Set `fork_owner`, `author_name`, `author_url`, and `author_email`. Leave `maintainer` and `human_tester` blank to use the logged-in GitHub user. Set `helpdesk_base` only if `odoo-fix` should accept tickets from a helpdesk.
+Edit `~/.cursor/skills/shared/contributor.md` once. Set `fork_owner`, `author_name`, `author_url`, and `author_email`. Leave `maintainer` and `human_tester` blank to use the logged-in GitHub user.
 
 Reload Cursor. Invoke with `/odoo-migrate`, `/odoo-dev`, `/odoo-fix`, `/odoo-review`, `/odoo-merge`, `/odoo-rebase`, or `/odoo-translate`.
 

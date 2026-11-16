@@ -14,7 +14,6 @@ Skills that push or write new copyright read it before they start. If a required
 | `author_email` | Before new copyright | `YOUR_EMAIL` |
 | `maintainer` | No | |
 | `human_tester` | No | |
-| `helpdesk_base` | No | |
 
 ## fork_owner
 
@@ -35,7 +34,3 @@ GitHub login `odoo-review` assigns when a pull request is ready for human testin
 Copyright header and `CONTRIBUTORS.md` line on files you add. Leave existing authors and copyright years as they are.
 
 `author_url` includes the scheme, for example `https://example.com`.
-
-## helpdesk_base
-
-Optional URL prefix. When set, `odoo-fix` accepts a ticket whose URL starts with it, as well as a GitHub issue. When blank, `odoo-fix` accepts GitHub issues only.

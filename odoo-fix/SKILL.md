@@ -1,10 +1,10 @@
 ---
 name: odoo-fix
 description: >
-  Diagnose and fix bugs in Odoo modules from a GitHub issue URL or, when helpdesk_base
-  is set in the contributor profile, a helpdesk ticket. Enforces one module per branch,
+  Diagnose and fix bugs in Odoo modules from a GitHub issue URL. Enforces one module per branch,
   tests and coverage (>99%) before every commit/push, one squashed commit, push to your fork never OCA,
-  PR with bug/needs review labels. Not for migration (odoo-migrate), new modules (odoo-dev),
+  GitHub issue set to type Bug with milestone, bug/series/mod labels, and assignee, and a PR with
+  bug/needs review labels. Not for migration (odoo-migrate), new modules (odoo-dev),
   PR review (odoo-review), or estimation (odoo-estimator).
 ---
 
@@ -12,7 +12,7 @@ description: >
 
 Reproduce → classify → minimal fix → validate → one squashed commit → fork PR.
 
-**Profile:** [contributor](../shared/contributor.md) — read before push. Stop if `fork_owner` is still `YOUR_GITHUB_ORG`. A helpdesk ticket is accepted only when `helpdesk_base` is set.
+**Profile:** [contributor](../shared/contributor.md) — read before push. Stop if `fork_owner` is still `YOUR_GITHUB_ORG`.
 
 **Platform (shared):** [validation-gate](../shared/validation-gate.md) · [git-commit](../shared/git-commit.md) · [git-one-module](../shared/git-one-module.md) · [fork-remote](../shared/fork-remote.md) · [oca-pr](../shared/oca-pr.md) · [oca-merge-policy](../shared/oca-merge-policy.md) · [testing](../shared/testing.md)
 
@@ -22,13 +22,13 @@ Reproduce → classify → minimal fix → validate → one squashed commit → 
 /odoo-fix https://github.com/OCA/field-service/issues/123
 ```
 
-Ask for a GitHub issue URL if none is given. When `helpdesk_base` is set, also accept a ticket URL that starts with that prefix.
+Ask for a GitHub issue URL if none is given.
 
 ## Workflow
 
 ```
-Step 0  Inputs from issue or helpdesk ticket
-Step 1  Branch (one module)
+Step 0  Inputs from the GitHub issue
+Step 1  Branch + package the GitHub issue
 Step 2  Reproduce
 Step 3  Classify → fix pattern
 Step 4  Minimal fix (no commits yet)
@@ -50,26 +50,62 @@ Step 7  Report
 
 ## Step 0 — Inputs
 
-One of:
-
-- **GitHub issue** — `$issue_url`. Parse owner, `$repo`, `$ISSUE_NUMBER`. Read title, body, labels, milestone with `gh issue view`. Derive `$module`, `$target_ver`, and the symptom from the issue.
-- **Helpdesk ticket** — only when `helpdesk_base` is set. The URL must start with that prefix. Read the ticket the user already has open. The symptom comes from the ticket. Ask for `$repo`, `$module`, and `$target_ver` when the ticket does not name them. Do not invent a GitHub issue. If `helpdesk_base` is blank, ask for a GitHub issue instead.
+**GitHub issue** — `$issue_url`. Parse owner, `$repo`, `$ISSUE_NUMBER`. Read title, body, labels, milestone with `gh issue view`. Derive `$module`, `$target_ver`, and the symptom from the issue. Require a GitHub issue URL.
 
 ```bash
 [ -z "$GITHUB_TOKEN" ] && echo "ERROR: GITHUB_TOKEN not set" && exit 1
-# GitHub issue path only:
 gh issue view "$ISSUE_NUMBER" --repo "OCA/$repo" --json title,body,labels,milestone
 ```
 
-## Step 1 — Branch
+## Step 1 — Branch and issue packaging
 
 ```bash
-# GitHub issue: ${target_ver}-fix-${module}-${ISSUE_NUMBER}
-# Helpdesk:     ${target_ver}-fix-${module}-${ticket_id}
-BRANCH="${target_ver}-fix-${module}-${ISSUE_NUMBER:-$ticket_id}"
+# ${target_ver}-fix-${module}-${ISSUE_NUMBER}
+BRANCH="${target_ver}-fix-${module}-${ISSUE_NUMBER}"
 git fetch origin
 git checkout -b "$BRANCH" origin/${target_ver}
 ```
+
+Set these fields on `OCA/$repo#$ISSUE_NUMBER` before editing code. Use `gh api` REST, not `gh issue edit`.
+
+| Field | Value |
+|-------|--------|
+| Milestone | `$target_ver` (create it open if missing; never skip) |
+| Type | `Bug` |
+| Labels | add `bug`, `series:$target_ver`, `mod:$module` — do not remove labels already on the issue |
+| Assignee | profile `maintainer`, otherwise `gh api user -q .login`. Add that login; do not remove someone already assigned |
+
+```bash
+ISSUE_ASSIGNEE="${maintainer:-$(gh api user -q .login)}"
+
+MILESTONE_NUM=$(gh api "repos/OCA/$repo/milestones" --paginate \
+  --jq ".[] | select(.title==\"$target_ver\") | .number")
+if [ -z "$MILESTONE_NUM" ]; then
+  MILESTONE_NUM=$(gh api -X POST "repos/OCA/$repo/milestones" \
+    -f title="$target_ver" -f state=open --jq .number)
+fi
+gh api -X PATCH "repos/OCA/$repo/issues/$ISSUE_NUMBER" \
+  -f type=Bug -F milestone="$MILESTONE_NUM"
+
+SERIES_COLOR=$(gh api "repos/OCA/$repo/labels" --paginate \
+  --jq '[.[] | select(.name|startswith("series:"))][0].color // "1D76DB"')
+gh api -X POST "repos/OCA/$repo/labels" -f name="bug" -f color="D73A4A" -f description="Something is not working" || true
+gh api -X POST "repos/OCA/$repo/labels" -f name="series:${target_ver}" -f color="$SERIES_COLOR" || true
+gh api -X POST "repos/OCA/$repo/labels" -f name="mod:${module}" -f color="5319E7" || true
+gh api -X POST "repos/OCA/$repo/issues/$ISSUE_NUMBER/labels" \
+  -f 'labels[]=bug' \
+  -f "labels[]=series:${target_ver}" \
+  -f "labels[]=mod:${module}"
+
+gh api -X POST "repos/OCA/$repo/issues/$ISSUE_NUMBER/assignees" \
+  -f "assignees[]=${ISSUE_ASSIGNEE}"
+
+gh issue view "$ISSUE_NUMBER" --repo "OCA/$repo" \
+  --json type,milestone,labels,assignees \
+  --jq '{type: .type.name, milestone: .milestone.title, labels: [.labels[].name], assignees: [.assignees[].login]}'
+```
+
+Fail the step if `type` is not `Bug`, the milestone title is not `$target_ver`, or `bug`, `series:$target_ver`, or `mod:$module` is missing. If another person was already assigned, leave them and still add `$ISSUE_ASSIGNEE`.
 
 ## Steps 2–4 — Reproduce and fix
 
@@ -96,12 +132,20 @@ EOF
 ```
 
 Push: [shared/fork-remote.md](../shared/fork-remote.md)  
-PR: [shared/oca-pr.md](../shared/oca-pr.md) — title `[FIX] ${module}: …`, labels `bug` + `needs review` + `series:` + `mod:`, **milestone `$target_ver`** (never skip), body **## Test scenario**. GitHub issue: `Fixes …#N` and comment `$issue_url`. Helpdesk ticket: link the ticket URL — do not use `Fixes #N`.  
+PR: [shared/oca-pr.md](../shared/oca-pr.md) — title `[FIX] ${module}: …`, labels `bug` + `needs review` + `series:` + `mod:`, **milestone `$target_ver`** (never skip), body **## Test scenario**. Link the issue with `Fixes …#N` and comment `$issue_url`.  
 CI fixes: amend / soft-reset to keep **one** commit; `git push --force-with-lease fork`.
+
+The PR **description** must ask the issue author to review and test. Read the author with `gh issue view "$ISSUE_NUMBER" --repo "OCA/$repo" --jq .author.login`. Put this after the test scenario, using their login:
+
+```markdown
+@$issue_author please review and test this fix.
+```
+
+Also request that login as a PR reviewer (`requested_reviewers`), unless it is the authenticated user who opened the PR.
 
 ## Step 7 — Report
 
-Issue or helpdesk ticket, symptom, root cause, files, validation (pre-commit/tests/coverage %), test added, branch, 1 commit, PR/labels/milestone, merge eligibility.
+Issue, symptom, root cause, files, validation (pre-commit/tests/coverage %), test added, branch, 1 commit, issue type/milestone/labels/assignees, PR/labels/milestone, whether the issue author was asked to review and test, merge eligibility.
 
 ## Skill-specific references
 
