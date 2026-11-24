@@ -1,5 +1,7 @@
 # OCA merge policy (shared)
 
+No skill approves a pull request. A human approves after testing. Skills may request changes or comment. They must not submit `APPROVE`.
+
 Do **not** merge an OCA PR (`/ocabot merge`, `gh pr merge`) until **CI is green** **and** the
 review/age rules below are satisfied.
 
