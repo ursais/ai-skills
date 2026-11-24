@@ -9,6 +9,7 @@ ai-skills/
 ├── shared/                 # Platform policy (imported by workflow skills)
 ├── odoo-dev/               # New addon from a GitHub issue or design doc
 ├── odoo-migrate/           # Port module to a new Odoo series
+├── odoo-report/            # GitHub bug issue from a stacktrace, log, or notes
 ├── odoo-fix/               # Bug fix from a GitHub issue
 ├── odoo-assign/            # Assign an issue or PR to the module maintainer or PSC
 ├── odoo-review/            # Review an OCA PR (relevance, gates, CI, Bugbot/security/perf)
@@ -25,6 +26,7 @@ ai-skills/
 |------|--------|
 | New module from a GitHub issue or design doc | `odoo-dev` |
 | Port existing module to N.0 | `odoo-migrate` |
+| Bug issue from a stacktrace, log, or notes | `odoo-report` |
 | Bug / CI / traceback from a GitHub issue | `odoo-fix` |
 | Assign an issue or PR (module maintainer, else least-loaded PSC) | `odoo-assign` |
 | Review an OCA module PR | `odoo-review` |
@@ -34,7 +36,7 @@ ai-skills/
 
 ### Process
 
-An issue becomes a pull request, or it is assigned when it cannot be fixed. A pull request is reviewed, then assigned for a person to test. No skill approves. A human approves after testing, and `odoo-merge` runs only when the merge gates already pass.
+`odoo-report` opens a bug issue from a stacktrace, a log, or notes, with the series milestone and the `bug` label. An issue becomes a pull request, or it is assigned when it cannot be fixed. A pull request is reviewed, then assigned for a person to test. No skill approves. A human approves after testing, and `odoo-merge` runs only when the merge gates already pass.
 
 `odoo-migrate` ports a module that already exists onto a newer series. `odoo-rebase` updates a pull request on your fork when that branch is behind its base. `odoo-translate` updates translations: Weblate publishes them on OCA, and a local `i18n/` change becomes a pull request. Neither rebase nor translate assigns or approves.
 
@@ -43,10 +45,13 @@ An issue becomes a pull request, or it is assigned when it cannot be fixed. A pu
 ```mermaid
 flowchart TD
   start["Issue or design doc"]
+  raw["Stacktrace, log, or notes"]
   older["Module on an older series"]
   i18n["Translations"]
+  raw --> report["odoo-report"]
+  report --> fix["odoo-fix"]
   start --> dev["odoo-dev"]
-  start --> fix["odoo-fix"]
+  start --> fix
   older --> port["odoo-migrate"]
   i18n --> translate["odoo-translate"]
   dev --> pr["Pull request"]
@@ -88,6 +93,7 @@ mkdir -p ~/.cursor/skills
 cp -r /tmp/ai-skills/shared ~/.cursor/skills/
 cp -r /tmp/ai-skills/odoo-migrate ~/.cursor/skills/
 cp -r /tmp/ai-skills/odoo-dev ~/.cursor/skills/
+cp -r /tmp/ai-skills/odoo-report ~/.cursor/skills/
 cp -r /tmp/ai-skills/odoo-fix ~/.cursor/skills/
 cp -r /tmp/ai-skills/odoo-assign ~/.cursor/skills/
 cp -r /tmp/ai-skills/odoo-review ~/.cursor/skills/
@@ -98,7 +104,7 @@ cp -r /tmp/ai-skills/odoo-translate ~/.cursor/skills/
 
 Edit `~/.cursor/skills/shared/contributor.md` once. Set `fork_owner`, `author_name`, `author_url`, and `author_email`. Leave `maintainer` blank to use the logged-in GitHub user. Assignees are chosen by `/odoo-assign`, not by this file.
 
-Reload Cursor. Invoke with `/odoo-migrate`, `/odoo-dev`, `/odoo-fix`, `/odoo-assign`, `/odoo-review`, `/odoo-merge`, `/odoo-rebase`, or `/odoo-translate`.
+Reload Cursor. Invoke with `/odoo-migrate`, `/odoo-dev`, `/odoo-report`, `/odoo-fix`, `/odoo-assign`, `/odoo-review`, `/odoo-merge`, `/odoo-rebase`, or `/odoo-translate`.
 
 **`shared/` must sit next to the skills** (`~/.cursor/skills/shared`) so relative links like `../shared/validation-gate.md` resolve. Re-copying `shared/` overwrites `contributor.md` — keep a copy of your filled-in file and put it back.
 
