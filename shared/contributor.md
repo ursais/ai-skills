@@ -4,7 +4,7 @@ Edit this file once. After install it lives at `~/.cursor/skills/shared/contribu
 
 Skills that push or write new copyright read it before they start. If a required value below is still a `YOUR_*` placeholder, stop and ask the user to edit this file. Do not guess an organization, name, or email.
 
-`maintainer` and `human_tester` may stay blank. Blank means the authenticated GitHub user (`gh api user -q .login`).
+`maintainer` may stay blank. Blank means the authenticated GitHub user (`gh api user -q .login`). GitHub assignees are not taken from this file. Only `odoo-assign` sets them.
 
 | Key | Required | Value |
 |-----|----------|--------|
@@ -13,7 +13,6 @@ Skills that push or write new copyright read it before they start. If a required
 | `author_url` | Before new copyright | `YOUR_URL` |
 | `author_email` | Before new copyright | `YOUR_EMAIL` |
 | `maintainer` | No | |
-| `human_tester` | No | |
 
 ## fork_owner
 
@@ -23,11 +22,7 @@ When the fork does not exist yet: if `fork_owner` is an organization, create it 
 
 ## maintainer
 
-GitHub login stored in `__manifest__.py` `maintainers` and used as the default pull-request assignee. Blank uses the authenticated user.
-
-## human_tester
-
-GitHub login `odoo-review` assigns when a pull request is ready for human testing. Blank uses the authenticated user.
+GitHub login stored in `__manifest__.py` `maintainers` on modules you create. Blank uses the authenticated user. This is not the assignee of an existing OCA issue or pull request.
 
 ## author_name, author_url, author_email
 

@@ -11,18 +11,17 @@ Used after local validation and push to `$fork_owner` ([fork-remote.md](fork-rem
 | `series:${target_ver}` | **`needs fixing`** when requesting changes (keep `needs review`) |
 | `mod:${module}` only | |
 
-Assignee: `$PR_ASSIGNEE` (profile `maintainer`, otherwise `gh api user -q .login`).  
-Reviewer: `$PR_REVIEWER` (default `$PR_ASSIGNEE`).
+Do not set assignees. Only [odoo-assign](../odoo-assign/SKILL.md) does that.  
+Reviewer: `$PR_REVIEWER` (profile `maintainer`, otherwise `gh api user -q .login`).
 
 Use **`gh api` REST**, not `gh pr edit` — `gh pr edit` can fail on the Projects Classic GraphQL deprecation (including for milestones).
 
 Create missing labels before POSTing them (`mod:$module`, `needs fixing`, …). Match sibling label color when possible (`mod:` is `5319E7`; `needs fixing` is `D93F0B`).
 
-If the `$target_ver` milestone does not exist, **create** it (open), then assign. Verify after PATCH that `.milestone.title == $target_ver`.
+If the `$target_ver` milestone does not exist, **create** it (open), then set it on the pull request. Verify after PATCH that `.milestone.title == $target_ver`.
 
 ```bash
-PR_ASSIGNEE="${PR_ASSIGNEE:-${maintainer:-$(gh api user -q .login)}}"
-PR_REVIEWER="${PR_REVIEWER:-$PR_ASSIGNEE}"
+PR_REVIEWER="${PR_REVIEWER:-${maintainer:-$(gh api user -q .login)}}"
 
 # Milestone — required; title must equal $target_ver (e.g. 19.0)
 MILESTONE_NUM=$(gh api "repos/OCA/$repo/milestones" --paginate \
@@ -32,8 +31,7 @@ if [ -z "$MILESTONE_NUM" ]; then
     -f title="$target_ver" -f state=open --jq .number)
 fi
 gh api -X PATCH "repos/OCA/$repo/issues/$PR_NUMBER" \
-  -F milestone="$MILESTONE_NUM" \
-  -f "assignees[]=${PR_ASSIGNEE}"
+  -F milestone="$MILESTONE_NUM"
 
 gh api -X POST "repos/OCA/$repo/issues/$PR_NUMBER/labels" \
   -f 'labels[]=needs review' \
@@ -158,7 +156,7 @@ Full review workflow (conventions, CI, bugs, security, performance → posted Gi
 
 When reviewing someone else's PR (not opening one):
 
-1. Apply the standard labels, **milestone `$target_ver`**, assignee, and reviewer (section above) — **before** posting the GitHub review. Milestone is as mandatory as `needs review`.
+1. Apply the standard labels, **milestone `$target_ver`**, and reviewer (section above) — **before** posting the GitHub review. Milestone is as mandatory as `needs review`. Do not set assignees.
 2. **Manifest check (required):** every changed addon’s `__manifest__.py` must set
    **`development_status`** and **`maintainers`** (non-empty list). See [oca-conventions.md](oca-conventions.md).
 

@@ -3,18 +3,19 @@ name: odoo-review
 description: >
   Review an Odoo/OCA pull request: score relevance 0–100 (duplicates, usefulness, repo fit);
   if score ≥40, set labels/milestone and decide if ready for human testing — otherwise post a
-  contributor fix checklist; when ready, assign the human tester from the contributor profile. Also checks OCA conventions, CI,
-  bugs, security, performance, migration scripts, and architecture. Use when reviewing an
-  OCA module PR or /odoo-review. Not for writing modules (odoo-dev), migrations
-  (odoo-migrate), fixes (odoo-fix), merging (odoo-merge), rebasing (odoo-rebase), or the
-  team queue report (pr-review-report).
+  contributor fix checklist; when ready for human testing, hand off to odoo-assign.
+  Also checks OCA conventions, CI, bugs, security, performance, migration scripts, and
+  architecture. Use when reviewing an OCA module PR or /odoo-review. Not for writing
+  modules (odoo-dev), migrations (odoo-migrate), fixes (odoo-fix), assignment
+  (odoo-assign), merging (odoo-merge), rebasing (odoo-rebase), or the team queue
+  report (pr-review-report).
 ---
 
 # Odoo Module Review
 
-Review `$pr_url` in **three gates**: relevance score → packaging + technical readiness → assign for human test only when ready.
+Review `$pr_url` in **three gates**: relevance score → packaging + technical readiness → hand off to [odoo-assign](../odoo-assign/SKILL.md) only when ready for human testing.
 
-**Profile:** [contributor](../shared/contributor.md). `$human_tester` is `human_tester`, or `gh api user -q .login` when that field is blank.
+**Profile:** [contributor](../shared/contributor.md). This skill does not set assignees.
 
 **Platform (shared):** [oca-conventions](../shared/oca-conventions.md) · [oca-pr](../shared/oca-pr.md) · [oca-merge-policy](../shared/oca-merge-policy.md) · [git-one-module](../shared/git-one-module.md) · [git-commit](../shared/git-commit.md) · [validation-gate](../shared/validation-gate.md) · [testing](../shared/testing.md)
 
@@ -38,8 +39,8 @@ Step 3  Technical review (architecture, conventions, migration, CI, Bugbot, secu
         Wait until those agents return. Do not post while they are running.
 Step 4  Gate C — Ready for human review/testing?
         Then one review: the final decision. No second comment.
-        ├─ No  → REQUEST_CHANGES (short must-fix ask) + needs fixing; do not assign for test
-        └─ Yes → assign $human_tester (if free) + post review that it is ready for human test
+        ├─ No  → REQUEST_CHANGES (short must-fix ask) + needs fixing; do not assign
+        └─ Yes → post the ready review, then follow odoo-assign for this pull request
 Step 5  Report to user
 ```
 
@@ -64,7 +65,7 @@ If this run already submitted a review, stop. Put any later finding in the user 
 
 A **later** run that re-reviews an existing checklist edits that review body (check off done items, add only new remaining items). It does not submit a second review and does not also comment.
 
-Labels and the milestone (Gate B) are not the review; they may be set before it. Assign `$human_tester` only together with the final ready decision, never before the agents return.
+Labels and the milestone (Gate B) are not the review; they may be set before it. Follow `odoo-assign` only together with the final ready decision, never before the agents return.
 
 ## Core rules
 
@@ -72,8 +73,8 @@ Labels and the milestone (Gate B) are not the review; they may be set before it.
 2. When posting: one GitHub **review** at the end of the run, with the final decision — never a comment plus a review, and never an approval followed by request-changes; if **not to post**, chat-only checklist and no PR changes  
 3. PRs with score **≥ 40** get packaging triage: `needs review`, `series:$target_ver`, `mod:$module`, **milestone `$target_ver`** — never skip milestone ([oca-pr](../shared/oca-pr.md))  
 4. `$target_ver` = PR `baseRefName`  
-5. **Assign `$human_tester` only when Gate C passes** and the PR has **no other assignee**; never steal an existing assignee  
-6. If items remain → **once, same step**: milestone `$target_ver` + `needs fixing` + `REQUEST_CHANGES` with `### Left to fix` only; **do not** assign `$human_tester` for testing  
+5. **When Gate C passes**, post the ready review, then follow [odoo-assign](../odoo-assign/SKILL.md) for this pull request. Do not call the assignees API here  
+6. If items remain → **once, same step**: milestone `$target_ver` + `needs fixing` + `REQUEST_CHANGES` with `### Left to fix` only; **do not** run `odoo-assign`  
 7. Architecture of the *solution* still applies when Gate A continues ([references/architecture-relevance.md](references/architecture-relevance.md))  
 8. Migration script need, Bugbot, Security Review, and Performance pass when doing a deep review  
 
@@ -106,7 +107,7 @@ gh api --method POST "repos/$OWNER/$repo/pulls/$PR_NUMBER/reviews" --input - <<E
 EOF
 ```
 
-Stop. Report to the user. **Do not** assign `$human_tester`.
+Stop. Report to the user. **Do not** set assignees and **do not** run `odoo-assign`.
 
 **If ≥ 40:** continue (mention medium-score caveats in Notes when 40–69).
 
@@ -134,7 +135,7 @@ gh pr view "$PR_NUMBER" --repo "$OWNER/$repo" --json milestone \
   || { echo "ERROR: milestone $target_ver not set"; exit 1; }
 ```
 
-Do **not** assign `$human_tester` here — assignment is Gate C only.
+Do **not** set assignees here. Assignment happens only after Gate C passes, and only in `odoo-assign`.
 
 ## Step 3 — Technical review (deep)
 
@@ -188,7 +189,7 @@ Performance: use the full prompt from [performance-review.md](references/perform
 
 **Ready for human testing** only if **all** are true:
 
-- Relevance score **≥ 40** (prefer **≥ 70** before assigning scarce human time; for **40–69** assign only if the user explicitly wants)
+- Relevance score **≥ 40** (prefer **≥ 70** before handing off to `odoo-assign`; for **40–69** hand off only if the user explicitly wants)
 - CI green (or only out-of-scope codecov/project red)
 - No **must-fix** left
 - **Human-test path documented** — see below (not “PR Test scenario always”)
@@ -227,25 +228,13 @@ gh api -X POST "repos/$OWNER/$repo/issues/$PR_NUMBER/labels" -f 'labels[]=needs 
 gh api --method POST "repos/$OWNER/$repo/pulls/$PR_NUMBER/reviews" --input /tmp/oca-review-body.json
 ```
 
-**Do not** assign `$human_tester`. Keep `needs review` + `needs fixing`.
+**Do not** set assignees and **do not** run `odoo-assign`. Keep `needs review` + `needs fixing`.
 
 If the user says **not to post**: return that same `### Left to fix` checklist in chat and **do not** change the pull request.
 
-### Ready → assign for human test
+### Ready → hand off assignment
 
-```bash
-HUMAN_TESTER="${human_tester:-$(gh api user -q .login)}"
-existing=$(gh pr view "$PR_NUMBER" --repo "$OWNER/$repo" \
-  --json assignees --jq '[.assignees[].login] | join(",")')
-if [ -z "$existing" ]; then
-  gh api -X POST "repos/$OWNER/$repo/issues/$PR_NUMBER/assignees" \
-    -f "assignees[]=${HUMAN_TESTER}"
-elif echo ",$existing," | grep -qv ",${HUMAN_TESTER},"; then
-  echo "NOTE: already assigned to $existing — leave as-is (do not steal)"
-fi
-gh api -X POST "repos/$OWNER/$repo/pulls/$PR_NUMBER/requested_reviewers" \
-  -f "reviewers[]=${HUMAN_TESTER}" || true
-```
+Post the ready review, then follow [odoo-assign](../odoo-assign/SKILL.md) for this pull request in the same run. Do not call the assignees API here.
 
 | Gate C | `event` |
 |--------|---------|
@@ -263,7 +252,7 @@ Fold must-fix agent findings into that checklist. Keep nice-to-haves out of the 
 
 ## Step 5 — Report to user
 
-In **chat** (internal scorecard OK here): PR link; relevance score + band; Gate B/C; labels/milestone; must-fix vs assigned to **$human_tester**; review URL.
+In **chat** (internal scorecard OK here): PR link; relevance score + band; Gate B/C; labels/milestone; must-fix vs the assignee chosen by `odoo-assign`; review URL.
 
 If the user said not to post, the chat **is** the `### Left to fix` checklist (same content you would have submitted).
 

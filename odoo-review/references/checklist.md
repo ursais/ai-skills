@@ -19,7 +19,7 @@ See [relevance-score.md](relevance-score.md). Never post “worth reviewing: yes
 - [ ] Do **not** require PR Test scenario when USAGE already covers a fix/IMP of an existing flow
 - [ ] New/changed user-visible behavior → prefer USAGE update in the PR over a one-off PR scenario
 - [ ] Not draft
-- [ ] Prefer score ≥ 70 before assigning `$human_tester`; if not ready → contributor checklist only
+- [ ] Prefer score ≥ 70 before handing off to `odoo-assign`; if not ready → contributor checklist only
 
 ## OCA conventions
 
