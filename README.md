@@ -10,6 +10,7 @@ ai-skills/
 ├── odoo-dev/               # New addon from a GitHub issue or design doc
 ├── odoo-migrate/           # Port module to a new Odoo series
 ├── odoo-fix/               # Bug fix from a GitHub issue
+├── odoo-assign/            # Assign an issue or PR to the module maintainer or PSC
 ├── odoo-review/            # Review an OCA PR (relevance, gates, CI, Bugbot/security/perf)
 ├── odoo-merge/             # Merge a PR when gates pass (ocabot or GitHub API)
 ├── odoo-rebase/            # Rebase a PR head on your fork
@@ -25,6 +26,7 @@ ai-skills/
 | New module from a GitHub issue or design doc | `odoo-dev` |
 | Port existing module to N.0 | `odoo-migrate` |
 | Bug / CI / traceback from a GitHub issue | `odoo-fix` |
+| Assign an issue or PR (module maintainer, else least-loaded PSC) | `odoo-assign` |
 | Review an OCA module PR | `odoo-review` |
 | Merge a PR (gates + ocabot / API) | `odoo-merge` |
 | Rebase a PR head on your fork | `odoo-rebase` |
@@ -37,9 +39,9 @@ ai-skills/
 | [shared/validation-gate.md](shared/validation-gate.md) | pre-commit + tests + coverage >99% before commit/push |
 | [shared/git-commit.md](shared/git-commit.md) | Never `Co-authored-by: Cursor` — use `Assisted-by` |
 | [shared/git-one-module.md](shared/git-one-module.md) | One addon per branch/PR |
-| [shared/contributor.md](shared/contributor.md) | Fork owner, copyright, maintainer, human tester — set once |
+| [shared/contributor.md](shared/contributor.md) | Fork owner, copyright, maintainer — set once |
 | [shared/fork-remote.md](shared/fork-remote.md) | Push to your fork, never OCA |
-| [shared/oca-pr.md](shared/oca-pr.md) | Labels, milestone, assignee/reviewer, PR body (USAGE/test path + deps), triage, request changes, ocabot, CI loop |
+| [shared/oca-pr.md](shared/oca-pr.md) | Labels, milestone, reviewer, PR body (USAGE/test path + deps), triage, request changes, ocabot, CI loop |
 | [shared/oca-conventions.md](shared/oca-conventions.md) | Manifest keys, copyright, readme, icon, headers, demo, i18n |
 | [shared/oca-merge-policy.md](shared/oca-merge-policy.md) | 5 days / 2 reviews (or no-review fallback) |
 | [shared/testing.md](shared/testing.md) | Discover/run tests + coverage |
@@ -53,15 +55,16 @@ cp -r /tmp/ai-skills/shared ~/.cursor/skills/
 cp -r /tmp/ai-skills/odoo-migrate ~/.cursor/skills/
 cp -r /tmp/ai-skills/odoo-dev ~/.cursor/skills/
 cp -r /tmp/ai-skills/odoo-fix ~/.cursor/skills/
+cp -r /tmp/ai-skills/odoo-assign ~/.cursor/skills/
 cp -r /tmp/ai-skills/odoo-review ~/.cursor/skills/
 cp -r /tmp/ai-skills/odoo-merge ~/.cursor/skills/
 cp -r /tmp/ai-skills/odoo-rebase ~/.cursor/skills/
 cp -r /tmp/ai-skills/odoo-translate ~/.cursor/skills/
 ```
 
-Edit `~/.cursor/skills/shared/contributor.md` once. Set `fork_owner`, `author_name`, `author_url`, and `author_email`. Leave `maintainer` and `human_tester` blank to use the logged-in GitHub user.
+Edit `~/.cursor/skills/shared/contributor.md` once. Set `fork_owner`, `author_name`, `author_url`, and `author_email`. Leave `maintainer` blank to use the logged-in GitHub user. Assignees are chosen by `/odoo-assign`, not by this file.
 
-Reload Cursor. Invoke with `/odoo-migrate`, `/odoo-dev`, `/odoo-fix`, `/odoo-review`, `/odoo-merge`, `/odoo-rebase`, or `/odoo-translate`.
+Reload Cursor. Invoke with `/odoo-migrate`, `/odoo-dev`, `/odoo-fix`, `/odoo-assign`, `/odoo-review`, `/odoo-merge`, `/odoo-rebase`, or `/odoo-translate`.
 
 **`shared/` must sit next to the skills** (`~/.cursor/skills/shared`) so relative links like `../shared/validation-gate.md` resolve. Re-copying `shared/` overwrites `contributor.md` — keep a copy of your filled-in file and put it back.
 

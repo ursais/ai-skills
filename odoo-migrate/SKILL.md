@@ -55,7 +55,6 @@ Working directory: `/tmp/oca-mig/$repo/$repo`
 | `$module` | `mgmtsystem_action` | One module only |
 | `$source_ver` | `18.0` | Default: `$target_ver - 1` |
 | `$target_ver` | `20.0` | Target branch (17.0 / 18.0 / 19.0 / 20.0 supported) |
-| `$PR_ASSIGNEE` | profile `maintainer` | Blank maintainer: `gh api user -q .login` |
 
 Multiple modules → separate full runs.
 

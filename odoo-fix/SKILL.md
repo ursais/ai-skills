@@ -3,9 +3,10 @@ name: odoo-fix
 description: >
   Diagnose and fix bugs in Odoo modules from a GitHub issue URL. Enforces one module per branch,
   tests and coverage (>99%) before every commit/push, one squashed commit, push to your fork never OCA,
-  GitHub issue set to type Bug with milestone, bug/series/mod labels, and assignee, and a PR with
-  bug/needs review labels. Not for migration (odoo-migrate), new modules (odoo-dev),
-  PR review (odoo-review), or estimation (odoo-estimator).
+  GitHub issue set to type Bug with milestone and bug/series/mod labels, and a PR with
+  bug/needs review labels. Does not set assignees. If the issue cannot be fixed,
+  hand off to odoo-assign. Not for migration (odoo-migrate), new modules (odoo-dev),
+  PR review (odoo-review), assignment (odoo-assign), or estimation (odoo-estimator).
 ---
 
 # Odoo Module Fix
@@ -73,11 +74,10 @@ Set these fields on `OCA/$repo#$ISSUE_NUMBER` before editing code. Use `gh api` 
 | Milestone | `$target_ver` (create it open if missing; never skip) |
 | Type | `Bug` |
 | Labels | add `bug`, `series:$target_ver`, `mod:$module` — do not remove labels already on the issue |
-| Assignee | profile `maintainer`, otherwise `gh api user -q .login`. Add that login; do not remove someone already assigned |
+
+Do not set assignees. Only [odoo-assign](../odoo-assign/SKILL.md) does that.
 
 ```bash
-ISSUE_ASSIGNEE="${maintainer:-$(gh api user -q .login)}"
-
 MILESTONE_NUM=$(gh api "repos/OCA/$repo/milestones" --paginate \
   --jq ".[] | select(.title==\"$target_ver\") | .number")
 if [ -z "$MILESTONE_NUM" ]; then
@@ -97,21 +97,22 @@ gh api -X POST "repos/OCA/$repo/issues/$ISSUE_NUMBER/labels" \
   -f "labels[]=series:${target_ver}" \
   -f "labels[]=mod:${module}"
 
-gh api -X POST "repos/OCA/$repo/issues/$ISSUE_NUMBER/assignees" \
-  -f "assignees[]=${ISSUE_ASSIGNEE}"
-
 gh issue view "$ISSUE_NUMBER" --repo "OCA/$repo" \
-  --json type,milestone,labels,assignees \
-  --jq '{type: .type.name, milestone: .milestone.title, labels: [.labels[].name], assignees: [.assignees[].login]}'
+  --json type,milestone,labels \
+  --jq '{type: .type.name, milestone: .milestone.title, labels: [.labels[].name]}'
 ```
 
-Fail the step if `type` is not `Bug`, the milestone title is not `$target_ver`, or `bug`, `series:$target_ver`, or `mod:$module` is missing. If another person was already assigned, leave them and still add `$ISSUE_ASSIGNEE`.
+Fail the step if `type` is not `Bug`, the milestone title is not `$target_ver`, or `bug`, `series:$target_ver`, or `mod:$module` is missing.
 
 ## Steps 2–4 — Reproduce and fix
 
 Evidence: logs, `-i`/`-u`, tests ([shared/testing.md](../shared/testing.md)).  
 Patterns: [references/common-failures.md](references/common-failures.md).  
 Smallest correct diff; re-run repro until symptom is gone.
+
+## When you cannot fix
+
+Stop without a commit or a pull request when you cannot reproduce the bug, the safe fix is not clear, the change is out of scope for this module, or the user says not to change code. Then follow [odoo-assign](../odoo-assign/SKILL.md) for this issue in the same run. Do not call the assignees API from this skill.
 
 ## Step 5 — Validation gate
 
@@ -145,7 +146,7 @@ Also request that login as a PR reviewer (`requested_reviewers`), unless it is t
 
 ## Step 7 — Report
 
-Issue, symptom, root cause, files, validation (pre-commit/tests/coverage %), test added, branch, 1 commit, issue type/milestone/labels/assignees, PR/labels/milestone, whether the issue author was asked to review and test, merge eligibility.
+Issue, symptom, root cause, files, validation (pre-commit/tests/coverage %), test added, branch, 1 commit, issue type/milestone/labels, PR/labels/milestone, whether the issue author was asked to review and test, merge eligibility. If you stopped without a fix, say that and the assignee `odoo-assign` chose.
 
 ## Skill-specific references
 

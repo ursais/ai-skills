@@ -68,7 +68,7 @@ This looks very close to … / may already be covered by … / may fit better as
 **Suggested next step:** close in favor of #N / rebase onto … / generalize for OCA by …
 ```
 
-Do **not** assign `$human_tester`. Prefer helping the author over rejecting them.
+Do **not** set assignees and do **not** run `odoo-assign`. Prefer helping the author over rejecting them.
 
 ## If score 40–100
 
