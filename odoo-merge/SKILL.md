@@ -13,6 +13,8 @@ description: >
 
 Evaluate `$pr_url` against merge gates. If all pass, **merge** (OCA: ocabot comment; else GitHub API). If any fail, **do not merge** — report blockers only.
 
+Do **not** approve the pull request. Approvals counted by the gates must already come from a human who tested. Never submit `APPROVE` or `gh pr review --approve`.
+
 **Platform (shared):** [oca-merge-policy](../shared/oca-merge-policy.md) · [oca-pr](../shared/oca-pr.md) · [git-commit](../shared/git-commit.md)
 
 ## Invocation

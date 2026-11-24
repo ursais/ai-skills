@@ -4,7 +4,8 @@ description: >
   Review an Odoo/OCA pull request: score relevance 0–100 (duplicates, usefulness, repo fit);
   if score ≥40, set labels/milestone and decide if ready for human testing — otherwise post a
   contributor fix checklist; when ready for human testing, hand off to odoo-assign.
-  Also checks OCA conventions, CI, bugs, security, performance, migration scripts, and
+  Never approves a pull request — a human approves after testing. Also checks OCA
+  conventions, CI, bugs, security, performance, migration scripts, and
   architecture. Use when reviewing an OCA module PR or /odoo-review. Not for writing
   modules (odoo-dev), migrations (odoo-migrate), fixes (odoo-fix), assignment
   (odoo-assign), merging (odoo-merge), rebasing (odoo-rebase), or the team queue
@@ -57,9 +58,9 @@ If the user says not to post, return that same checklist in the chat and do not 
 
 ### One post, at the end
 
-Submit the GitHub review **once**, after Gate C is decided and every deep-review agent for that PR has returned or failed its one retry. That submission is the final decision (`APPROVE` or `REQUEST_CHANGES`). Do not post a provisional LGTM and correct it later.
+Submit the GitHub review **once**, after Gate C is decided and every deep-review agent for that PR has returned or failed its one retry. That submission is `REQUEST_CHANGES` when items remain, or `COMMENT` when the pull request is ready for a human to test. Never submit `APPROVE`, `gh pr review --approve`, or an LGTM that counts as an approval. A human approves after testing.
 
-In one run, **one review** per PR. Do not also post an issue comment. Do not approve and then request changes. GitHub cannot delete a submitted review (`deletePullRequestReview` only works on a pending review). Dismissing an approval leaves the LGTM text on the PR.
+In one run, **one review** per PR. Do not also post an issue comment. Do not request changes and then comment. GitHub cannot delete a submitted review (`deletePullRequestReview` only works on a pending review).
 
 If this run already submitted a review, stop. Put any later finding in the user report only. Do not post a second review or comment to correct it.
 
@@ -70,10 +71,10 @@ Labels and the milestone (Gate B) are not the review; they may be set before it.
 ## Core rules
 
 1. **Gate A first** — score relevance; deep-review only if **≥ 40** ([references/relevance-score.md](references/relevance-score.md))  
-2. When posting: one GitHub **review** at the end of the run, with the final decision — never a comment plus a review, and never an approval followed by request-changes; if **not to post**, chat-only checklist and no PR changes  
+2. When posting: one GitHub **review** at the end of the run — `REQUEST_CHANGES` or `COMMENT` only. Never `APPROVE`. If **not to post**, chat-only checklist and no PR changes  
 3. PRs with score **≥ 40** get packaging triage: `needs review`, `series:$target_ver`, `mod:$module`, **milestone `$target_ver`** — never skip milestone ([oca-pr](../shared/oca-pr.md))  
 4. `$target_ver` = PR `baseRefName`  
-5. **When Gate C passes**, post the ready review, then follow [odoo-assign](../odoo-assign/SKILL.md) for this pull request. Do not call the assignees API here  
+5. **When Gate C passes**, post a `COMMENT` that a human should test and approve, then follow [odoo-assign](../odoo-assign/SKILL.md) for this pull request. Do not call the assignees API here. Do not approve  
 6. If items remain → **once, same step**: milestone `$target_ver` + `needs fixing` + `REQUEST_CHANGES` with `### Left to fix` only; **do not** run `odoo-assign`  
 7. Architecture of the *solution* still applies when Gate A continues ([references/architecture-relevance.md](references/architecture-relevance.md))  
 8. Migration script need, Bugbot, Security Review, and Performance pass when doing a deep review  
@@ -232,23 +233,26 @@ gh api --method POST "repos/$OWNER/$repo/pulls/$PR_NUMBER/reviews" --input /tmp/
 
 If the user says **not to post**: return that same `### Left to fix` checklist in chat and **do not** change the pull request.
 
-### Ready → hand off assignment
+### Ready → comment, then hand off assignment
 
-Post the ready review, then follow [odoo-assign](../odoo-assign/SKILL.md) for this pull request in the same run. Do not call the assignees API here.
+Post one `COMMENT` review. Do not approve. Then follow [odoo-assign](../odoo-assign/SKILL.md) for this pull request in the same run. Do not call the assignees API here.
+
+```json
+{"event":"COMMENT","body":"Ready for human testing. A maintainer approves after testing."}
+```
 
 | Gate C | `event` |
 |--------|---------|
 | Not ready (must-fix) | `REQUEST_CHANGES` |
-| Ready, only nits you care about | `COMMENT` or `APPROVE` (omit nits on GitHub by default) |
-| Ready, clean | `APPROVE` |
+| Ready | `COMMENT` only. Never `APPROVE` |
 
-Track **Ready for human review/testing:** yes/no in the user report only.
+Track **Ready for human review/testing:** yes/no in the user report only. Tell the user that approval is manual, after a human has tested.
 
 ### Review body (GitHub)
 
-The GitHub review body is only a short ### Left to fix checklist. Do not post the long write-up with a relevance score, a CI recap, or a packaging essay.
+When items remain, the GitHub review body is only a short ### Left to fix checklist. Do not post the long write-up with a relevance score, a CI recap, or a packaging essay.
 
-Fold must-fix agent findings into that checklist. Keep nice-to-haves out of the PR unless the user wants them. Approve bodies stay minimal (`LGTM`) per [review-tone.md](references/review-tone.md).
+Fold must-fix agent findings into that checklist. Keep nice-to-haves out of the PR unless the user wants them. A ready pull request gets the short comment above, not `LGTM` and not an approval ([review-tone.md](references/review-tone.md)).
 
 ## Step 5 — Report to user
 
