@@ -1,12 +1,9 @@
 ---
 name: odoo-fix
 description: >
-  Diagnose and fix bugs in Odoo modules from a GitHub issue URL. Enforces one module per branch,
-  tests and coverage (>99%) before every commit/push, one squashed commit, push to your fork never OCA,
-  GitHub issue set to type Bug with milestone and bug/series/mod labels, and a PR with
-  bug/needs review labels. Does not set assignees. If the issue cannot be fixed,
-  hand off to odoo-assign. Not for migration (odoo-migrate), new modules (odoo-dev),
-  PR review (odoo-review), assignment (odoo-assign), or estimation (odoo-estimator).
+  Fix one OCA module from a GitHub issue. Tests and coverage >99%, one commit, PR from
+  your fork. Does not assign. If it cannot fix, hand off to odoo-assign. Use for
+  /odoo-fix. Not for migrate, new modules, review, or assign.
 ---
 
 # Odoo Module Fix
@@ -15,7 +12,7 @@ Reproduce → classify → minimal fix → validate → one squashed commit → 
 
 **Profile:** [contributor](../shared/contributor.md) — read before push. Stop if `fork_owner` is still `YOUR_GITHUB_ORG`.
 
-**Platform (shared):** [validation-gate](../shared/validation-gate.md) · [git-commit](../shared/git-commit.md) · [git-one-module](../shared/git-one-module.md) · [fork-remote](../shared/fork-remote.md) · [oca-pr](../shared/oca-pr.md) · [oca-merge-policy](../shared/oca-merge-policy.md) · [testing](../shared/testing.md)
+**Platform (shared):** [validation-gate](../shared/validation-gate.md) · [git-commit](../shared/git-commit.md) · [git-one-module](../shared/git-one-module.md) · [fork-remote](../shared/fork-remote.md) · [oca-pr](../shared/oca-pr.md) · [oca-merge-policy](../shared/oca-merge-policy.md) · [testing](../shared/testing.md). Read a linked file only in the step that needs it.
 
 ## Invocation
 

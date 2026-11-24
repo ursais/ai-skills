@@ -1,12 +1,9 @@
 ---
 name: odoo-merge
 description: >
-  Check whether an Odoo/OCA pull request meets merge conditions (CI, reviews, age,
-  code coverage) and, if so, merge it — comment /ocabot merge patch|minor|major on OCA
-  repos, or merge via the GitHub API otherwise. Use when merging a PR, /odoo-merge, or
-  when asked if a PR is ready to merge. Not for reviewing (odoo-review), rebasing
-  (odoo-rebase), writing modules (odoo-dev), migrations (odoo-migrate), or fixes
-  (odoo-fix).
+  Merge an OCA pull request when CI, human approvals, age, and coverage already
+  pass. OCA uses /ocabot merge. Never approves. Use for /odoo-merge. Not for
+  review, rebase, or writing the change.
 ---
 
 # Odoo Merge
@@ -15,7 +12,7 @@ Evaluate `$pr_url` against merge gates. If all pass, **merge** (OCA: ocabot comm
 
 Do **not** approve the pull request. Approvals counted by the gates must already come from a human who tested. Never submit `APPROVE` or `gh pr review --approve`.
 
-**Platform (shared):** [oca-merge-policy](../shared/oca-merge-policy.md) · [oca-pr](../shared/oca-pr.md) · [git-commit](../shared/git-commit.md)
+**Platform (shared):** [oca-merge-policy](../shared/oca-merge-policy.md) · [oca-pr](../shared/oca-pr.md) · [git-commit](../shared/git-commit.md). Read a linked file only in the step that needs it.
 
 ## Invocation
 

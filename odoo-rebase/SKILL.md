@@ -1,11 +1,9 @@
 ---
 name: odoo-rebase
 description: >
-  Rebase an Odoo/OCA pull request head onto its base branch when the source (head)
-  repository is under your fork owner. Use when rebasing a PR, /odoo-rebase, or when a
-  PR needs updating onto the target series. Not for merging (odoo-merge), reviewing
-  (odoo-review), writing modules (odoo-dev), migrations (odoo-migrate), or fixes
-  (odoo-fix).
+  Rebase a pull request onto its base when the head repository is your fork, then
+  force-push with --force-with-lease. Use for /odoo-rebase. Not for merge, review,
+  or writing the change.
 ---
 
 # Odoo Rebase
@@ -14,7 +12,7 @@ Take `$pr_url`, verify the **head (source) repo is under `$fork_owner`**, then *
 
 **Profile:** [contributor](../shared/contributor.md) — read before clone or push. Stop if `fork_owner` is still `YOUR_GITHUB_ORG`.
 
-**Platform (shared):** [fork-remote](../shared/fork-remote.md) · [git-commit](../shared/git-commit.md)
+**Platform (shared):** [fork-remote](../shared/fork-remote.md) · [git-commit](../shared/git-commit.md). Read a linked file only in the step that needs it.
 
 ## Invocation
 

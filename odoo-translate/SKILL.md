@@ -1,11 +1,8 @@
 ---
 name: odoo-translate
 description: >
-  Translate OCA modules via Weblate (translation.odoo-community.org) and otherwise manage
-  module i18n/ (.pot / .po): export templates, msgmerge, new languages, [UPD] commits.
-  Use when translating an OCA addon, fixing i18n, updating .pot, adding a language, or
-  /odoo-translate. Not for module code (odoo-dev), migrations (odoo-migrate), bug fixes
-  (odoo-fix), or PR review (odoo-review).
+  Translate one OCA module. Prefer Weblate. Otherwise update i18n/ (.pot, .po) with
+  an [UPD] commit. Use for /odoo-translate. Not for module code, migrate, or review.
 ---
 
 # Odoo / OCA Translate
@@ -14,7 +11,7 @@ Translate `$module` (and keep `i18n/` healthy). **Prefer OCA Weblate** when the 
 
 **Profile:** [contributor](../shared/contributor.md) — read before push. Stop if `fork_owner` is still `YOUR_GITHUB_ORG`.
 
-**Platform (shared):** [oca-conventions](../shared/oca-conventions.md) · [git-commit](../shared/git-commit.md) · [git-one-module](../shared/git-one-module.md) · [fork-remote](../shared/fork-remote.md) · [oca-pr](../shared/oca-pr.md)
+**Platform (shared):** [oca-conventions](../shared/oca-conventions.md) · [git-commit](../shared/git-commit.md) · [git-one-module](../shared/git-one-module.md) · [fork-remote](../shared/fork-remote.md) · [oca-pr](../shared/oca-pr.md). Read a linked file only in the step that needs it.
 
 ## Invocation
 

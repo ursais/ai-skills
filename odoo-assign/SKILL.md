@@ -1,14 +1,10 @@
 ---
 name: odoo-assign
 description: >
-  Assign an OCA GitHub issue or pull request to a module maintainer. Use when
-  odoo-fix cannot fix an issue, when a pull request is ready for human testing,
-  or when the user runs /odoo-assign. If the module has no maintainer, assign
-  the Project Steering Committee member with the fewest open assigned issues
-  and pull requests. When the issue or pull request has no milestone and no
-  labels, set them the same way odoo-review does. This is the only skill that
-  sets GitHub assignees. Not for writing the fix (odoo-fix), reviewing
-  (odoo-review), merging (odoo-merge), or rebasing (odoo-rebase).
+  Assign one OCA issue or pull request to the least-loaded module maintainer, or
+  to the least-loaded PSC member when the module has none. Set milestone and
+  labels only when both are missing. The only skill that sets assignees. Use for
+  /odoo-assign. Not for fixing, reviewing, or merging.
 ---
 
 # Odoo assign

@@ -1,11 +1,9 @@
 ---
 name: odoo-migrate
 description: >
-  Migrate an OCA module between Odoo versions and open a PR from your fork to OCA. Use when migrating
-  or porting an OCA module (e.g. to 17.0/18.0/19.0/20.0), creating a migration branch in your fork, or
-  opening an OCA migration PR. One module per branch and PR. Runs pre-commit, tests, and coverage
-  (>99%) before every commit/push. Not for new modules (odoo-dev), bug fixes (odoo-fix),
-  or PR review (odoo-review).
+  Port one OCA module to another series and open a PR from your fork. Tests and
+  coverage >99%. Read only the migration notes for the target series. Use for
+  /odoo-migrate. Not for new modules, bugfixes, or review.
 ---
 
 # OCA Module Migration
@@ -14,7 +12,7 @@ Migrate `$module` in `OCA/$repo` from `$source_ver` → `$target_ver`, push from
 
 **Profile:** [contributor](../shared/contributor.md) — read before clone, push, or copyright. Stop if `fork_owner` or the author fields are still `YOUR_*`.
 
-**Platform (shared):** [validation-gate](../shared/validation-gate.md) · [git-commit](../shared/git-commit.md) · [git-one-module](../shared/git-one-module.md) · [fork-remote](../shared/fork-remote.md) · [oca-conventions](../shared/oca-conventions.md) · [oca-pr](../shared/oca-pr.md) · [oca-merge-policy](../shared/oca-merge-policy.md) · [testing](../shared/testing.md)
+**Platform (shared):** [validation-gate](../shared/validation-gate.md) · [git-commit](../shared/git-commit.md) · [git-one-module](../shared/git-one-module.md) · [fork-remote](../shared/fork-remote.md) · [oca-conventions](../shared/oca-conventions.md) · [oca-pr](../shared/oca-pr.md) · [oca-merge-policy](../shared/oca-merge-policy.md) · [testing](../shared/testing.md). Read a linked file only in the step that needs it. Open only the target series notes under `references/`.
 
 ## Workflow
 

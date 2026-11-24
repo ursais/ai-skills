@@ -1,12 +1,8 @@
 ---
 name: odoo-dev
 description: >
-  Develop a new Odoo OCA addon from a GitHub issue or a design document (Word file or
-  SharePoint URL) — analyze requirements, scaffold, implement,
-  tests (coverage >99%), readme/i18n, and open a PR from your fork to OCA. Use when building a new
-  OCA module or implementing a feature issue. One module per branch. Not for migration
-  (odoo-migrate), bug fixes (odoo-fix), PR review (odoo-review),
-  or estimation (odoo-estimator).
+  Build one new OCA module from a GitHub issue or a design doc, with tests, coverage
+  >99%, and a PR from your fork. Use for /odoo-dev. Not for migrate, bugfix, or review.
 ---
 
 # OCA New Module Development
@@ -15,7 +11,7 @@ Build a **new** OCA addon from a GitHub issue or a design document, then PR from
 
 **Profile:** [contributor](../shared/contributor.md) — read before clone, push, or copyright. Stop if `fork_owner` or the author fields are still `YOUR_*`.
 
-**Platform (shared):** [validation-gate](../shared/validation-gate.md) · [git-commit](../shared/git-commit.md) · [git-one-module](../shared/git-one-module.md) · [fork-remote](../shared/fork-remote.md) · [oca-conventions](../shared/oca-conventions.md) · [oca-pr](../shared/oca-pr.md) · [oca-merge-policy](../shared/oca-merge-policy.md) · [testing](../shared/testing.md)
+**Platform (shared):** [validation-gate](../shared/validation-gate.md) · [git-commit](../shared/git-commit.md) · [git-one-module](../shared/git-one-module.md) · [fork-remote](../shared/fork-remote.md) · [oca-conventions](../shared/oca-conventions.md) · [oca-pr](../shared/oca-pr.md) · [oca-merge-policy](../shared/oca-merge-policy.md) · [testing](../shared/testing.md). Read a linked file only in the step that needs it.
 
 ## Invocation
 
