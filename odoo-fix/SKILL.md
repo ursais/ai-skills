@@ -3,7 +3,7 @@ name: odoo-fix
 description: >
   Fix one OCA module from a GitHub issue. Tests and coverage >99%, one commit, PR from
   your fork. Does not assign. If it cannot fix, hand off to odoo-assign. Use for
-  /odoo-fix. Not for migrate, new modules, review, or assign.
+  /odoo-fix. Not for reporting a new issue (odoo-report), migrate, new modules, review, or assign.
 ---
 
 # Odoo Module Fix
