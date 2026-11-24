@@ -32,6 +32,33 @@ ai-skills/
 | Rebase a PR head on your fork | `odoo-rebase` |
 | Translate module (Weblate / i18n) | `odoo-translate` |
 
+### Process
+
+An issue becomes a pull request, or it is assigned when it cannot be fixed. A pull request is reviewed, then assigned for a person to test. No skill approves. A human approves after testing, and `odoo-merge` runs only when the merge gates already pass.
+
+`odoo-assign` picks the module maintainer with the fewest open assignments in that repository. If the module has no maintainer, it picks the Project Steering Committee member with the fewest. If the issue or pull request has no milestone and no labels, it sets the series milestone and the `needs review`, `series:`, and `mod:` labels first.
+
+`odoo-rebase` updates a pull request onto its base branch. `odoo-translate` updates `i18n/` and does not assign or approve.
+
+```mermaid
+flowchart TD
+  start["Issue or design doc"]
+  start --> dev["odoo-dev"]
+  start --> fix["odoo-fix"]
+  start --> port["odoo-migrate"]
+  dev --> pr["Pull request"]
+  port --> pr
+  fix -->|fixed| pr
+  fix -->|cannot fix| assign["odoo-assign"]
+  pr --> review["odoo-review"]
+  review -->|must fix| changes["Request changes"]
+  changes --> review
+  review -->|ready to test| comment["Comment only"]
+  comment --> assign
+  assign --> human["Human tests and approves"]
+  human --> merge["odoo-merge"]
+```
+
 ### Shared platform
 
 | File | Purpose |
