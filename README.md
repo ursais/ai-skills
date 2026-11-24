@@ -36,20 +36,27 @@ ai-skills/
 
 An issue becomes a pull request, or it is assigned when it cannot be fixed. A pull request is reviewed, then assigned for a person to test. No skill approves. A human approves after testing, and `odoo-merge` runs only when the merge gates already pass.
 
-`odoo-assign` picks the module maintainer with the fewest open assignments in that repository. If the module has no maintainer, it picks the Project Steering Committee member with the fewest. If the issue or pull request has no milestone and no labels, it sets the series milestone and the `needs review`, `series:`, and `mod:` labels first.
+`odoo-migrate` ports a module that already exists onto a newer series. `odoo-rebase` updates a pull request on your fork when that branch is behind its base. `odoo-translate` updates translations: Weblate publishes them on OCA, and a local `i18n/` change becomes a pull request. Neither rebase nor translate assigns or approves.
 
-`odoo-rebase` updates a pull request onto its base branch. `odoo-translate` updates `i18n/` and does not assign or approve.
+`odoo-assign` picks the module maintainer with the fewest open assignments in that repository. If the module has no maintainer, it picks the Project Steering Committee member with the fewest. If the issue or pull request has no milestone and no labels, it sets the series milestone and the `needs review`, `series:`, and `mod:` labels first.
 
 ```mermaid
 flowchart TD
   start["Issue or design doc"]
+  older["Module on an older series"]
+  i18n["Translations"]
   start --> dev["odoo-dev"]
   start --> fix["odoo-fix"]
-  start --> port["odoo-migrate"]
+  older --> port["odoo-migrate"]
+  i18n --> translate["odoo-translate"]
   dev --> pr["Pull request"]
   port --> pr
   fix -->|fixed| pr
   fix -->|cannot fix| assign["odoo-assign"]
+  translate -->|local i18n change| pr
+  translate -->|OCA| weblate["Weblate publishes .po"]
+  pr -->|your fork is behind base| rebase["odoo-rebase"]
+  rebase --> pr
   pr --> review["odoo-review"]
   review -->|must fix| changes["Request changes"]
   changes --> review
