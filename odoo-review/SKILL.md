@@ -1,15 +1,10 @@
 ---
 name: odoo-review
 description: >
-  Review an Odoo/OCA pull request: score relevance 0–100 (duplicates, usefulness, repo fit);
-  if score ≥40, set labels/milestone and decide if ready for human testing — otherwise post a
-  contributor fix checklist; when ready for human testing, hand off to odoo-assign.
-  Never approves a pull request — a human approves after testing. Also checks OCA
-  conventions, CI, bugs, security, performance, migration scripts, and
-  architecture. Use when reviewing an OCA module PR or /odoo-review. Not for writing
-  modules (odoo-dev), migrations (odoo-migrate), fixes (odoo-fix), assignment
-  (odoo-assign), merging (odoo-merge), rebasing (odoo-rebase), or the team queue
-  report (pr-review-report).
+  Review an OCA pull request: relevance, labels, milestone, and a short comment or
+  request for changes. Hands off to odoo-assign when ready for human testing. Never
+  approves. Deep Bugbot, security, and performance agents run only when the user asks.
+  Use for /odoo-review. Not for writing, migrating, fixing, assigning, or merging.
 ---
 
 # Odoo Module Review
@@ -18,7 +13,7 @@ Review `$pr_url` in **three gates**: relevance score → packaging + technical r
 
 **Profile:** [contributor](../shared/contributor.md). This skill does not set assignees.
 
-**Platform (shared):** [oca-conventions](../shared/oca-conventions.md) · [oca-pr](../shared/oca-pr.md) · [oca-merge-policy](../shared/oca-merge-policy.md) · [git-one-module](../shared/git-one-module.md) · [git-commit](../shared/git-commit.md) · [validation-gate](../shared/validation-gate.md) · [testing](../shared/testing.md)
+**Platform (shared):** [oca-conventions](../shared/oca-conventions.md) · [oca-pr](../shared/oca-pr.md) · [oca-merge-policy](../shared/oca-merge-policy.md) · [git-one-module](../shared/git-one-module.md) · [git-commit](../shared/git-commit.md) · [validation-gate](../shared/validation-gate.md) · [testing](../shared/testing.md). Read a linked file only in the step that needs it.
 
 ## Invocation
 
@@ -36,8 +31,7 @@ Step 0  Parse PR (+ checkout only if relevance ≥ 40)
 Step 1  Gate A — Relevance score 0–100 (usefulness, duplicates, repo fit)
         └─ 0–39  → soft triage COMMENT, stop (no human-test assign)
 Step 2  Gate B — Score ≥ 40: set labels + milestone
-Step 3  Technical review (architecture, conventions, migration, CI, Bugbot, security, perf)
-        Wait until those agents return. Do not post while they are running.
+Step 3  CI + checklist. Deep agents only if the user asked. Wait for those agents before posting.
 Step 4  Gate C — Ready for human review/testing?
         Then one review: the final decision. No second comment.
         ├─ No  → REQUEST_CHANGES (short must-fix ask) + needs fixing; do not assign
@@ -76,8 +70,8 @@ Labels and the milestone (Gate B) are not the review; they may be set before it.
 4. `$target_ver` = PR `baseRefName`  
 5. **When Gate C passes**, post a `COMMENT` that a human should test and approve, then follow [odoo-assign](../odoo-assign/SKILL.md) for this pull request. Do not call the assignees API here. Do not approve  
 6. If items remain → **once, same step**: milestone `$target_ver` + `needs fixing` + `REQUEST_CHANGES` with `### Left to fix` only; **do not** run `odoo-assign`  
-7. Architecture of the *solution* still applies when Gate A continues ([references/architecture-relevance.md](references/architecture-relevance.md))  
-8. Migration script need, Bugbot, Security Review, and Performance pass when doing a deep review  
+7. Read [architecture-relevance.md](references/architecture-relevance.md) only when the diff adds or splits a module  
+8. Bugbot, Security Review, and Performance run only when the user asks for that deep review  
 
 
 
@@ -92,7 +86,7 @@ gh pr view "$PR_NUMBER" --repo "$OWNER/$repo" \
 
 `$BASE_BRANCH` / `$target_ver` = `baseRefName`. Identify `$module` from changed addon dirs when possible.
 
-Defer local checkout / Bugbot / Security / Performance until relevance **≥ 40**.
+Defer a local checkout until relevance **≥ 40**. Launch Bugbot, Security, or Performance only when the user asked.
 
 ## Step 1 — Gate A: relevance score
 
@@ -149,21 +143,11 @@ gh pr checkout "$PR_NUMBER" --repo "$OWNER/$repo" \
   || { git clone "https://github.com/$OWNER/$repo.git" "$WORKDIR" && cd "$WORKDIR" && gh pr checkout "$PR_NUMBER"; }
 ```
 
-Run all of:
+Always: `gh pr checks` (red or pending → not ready) and [checklist.md](references/checklist.md). Open another reference only when the diff needs it: [architecture-relevance.md](references/architecture-relevance.md), [migration-needed.md](references/migration-needed.md), or [oca-conventions](../shared/oca-conventions.md). One module: [git-one-module](../shared/git-one-module.md).
 
-| Check | Reference |
-|-------|-----------|
-| CI | `gh pr checks` — red/pending → not ready for human test |
-| Architecture / solution shape | [architecture-relevance.md](references/architecture-relevance.md) |
-| OCA conventions + coding standards | [checklist.md](references/checklist.md), [oca-conventions](../shared/oca-conventions.md) |
-| Migration script need | [migration-needed.md](references/migration-needed.md) |
-| Bugbot + Security + Performance | **three parallel** agents; retry each once |
+### Bugbot / Security / Performance (only when the user asks)
 
-One-module preference: [git-one-module](../shared/git-one-module.md).
-
-### Bugbot / Security / Performance (required when score ≥ 40)
-
-Launch **in the same turn** (parallel):
+Skip these unless the user says deep, bugbot, security, or performance. When they do, launch **in the same turn** (parallel) and wait before posting:
 
 1. **Bugbot** (`subagent_type: bugbot`)
 2. **Security Review** (`subagent_type: security-review`)
