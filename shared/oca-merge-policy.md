@@ -16,13 +16,17 @@ review/age rules below are satisfied.
 4. **Coverage**: patch coverage checks (e.g. `codecov/patch`) must be green when present; project-only
    coverage is not a blocker if patch is green.
 
+**`odoo-merge` also requires** (stricter than the fallback above): the **assignee** (not the author) has **APPROVED after testing**. If `/ocabot merge` already aborted and there is no later commit, do not merge again.
+
 ## When reporting "ready to merge"
 
 | Situation | Merge? |
 |-----------|--------|
-| CI green, ≥ 5 days, ≥ 2 approvals (or 3 if required) | Yes |
-| CI green, ≥ 5 days, **zero** reviews | Yes (no-review fallback) |
+| CI green, ≥ 5 days, ≥ 2 approvals (or 3 if required), assignee (not author) APPROVED | Yes |
+| CI green, ≥ 5 days, **zero** reviews | Only if the user explicitly asks (OCA no-review fallback). `odoo-merge` does not do this by default. |
 | CI green, ≥ 5 days, only 1 approval | No — need one more review |
+| Assignee has not APPROVED, or assignment is only the author | No — Test / Assign first |
+| `/ocabot merge` aborted and no new commit since | No — Fix first |
 | CI green, < 5 days | No — wait |
 | CI red | No — fix first |
 

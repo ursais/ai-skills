@@ -63,7 +63,7 @@ On a **later** run, edit the existing review body: check off done items (`- [x]`
 ### Ready for a human (comment only)
 
 ```markdown
-Ready for human testing. A maintainer approves after testing.
+Automated review has been completed successfully. This pull request is ready for human testing. A maintainer should test/review before approving.
 ```
 
 Do not write `LGTM`. Do not use event `APPROVE`.

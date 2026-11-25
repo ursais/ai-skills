@@ -93,22 +93,25 @@ Apply [oca-merge-policy](../shared/oca-merge-policy.md):
 
 ```bash
 gh pr view "$PR_NUMBER" --repo "$OWNER/$repo" \
-  --json createdAt,reviews,author,reviewDecision \
+  --json createdAt,reviews,author,reviewDecision,assignees,comments,commits \
   --jq '{
     created: .createdAt,
     age_days: ((now - (.createdAt | fromdateiso8601)) / 86400 | floor),
     approvals: (.author.login as $a | [.reviews[] | select(.state == "APPROVED" and .author.login != $a)] | unique_by(.author.login) | length),
     changes_requested: ([.reviews[] | select(.state == "CHANGES_REQUESTED")] | length),
-    review_decision: .reviewDecision
+    review_decision: .reviewDecision,
+    assignees: [.assignees[].login]
   }'
 ```
 
 | Gate | Pass when |
 |------|-----------|
-| Age | `age_days >= 5` |
-| Reviews | `approvals >= 2` (or `>= 3` if repo/PSG requires it), **or** `approvals == 0` (no-review fallback after 5 days) |
+| Age | `age_days >= 5` (`createdAt`) |
+| Reviews | `approvals >= 2` distinct current `APPROVED` reviews, **neither the author**. (`>= 3` if the repo/PSG requires it.) **Do not** use the 0-review fallback unless the user explicitly asks. |
+| Assignee tested | At least one **assignee who is not the author** has **APPROVED** (they tested). No assignee, or assignee has not approved → blocked (Assign / Test, not Merge). |
 | Changes requested | No outstanding `CHANGES_REQUESTED` from a reviewer that was not superseded by a later approval from that reviewer; if `reviewDecision == CHANGES_REQUESTED` → blocked |
 | Labels | No `needs fixing` (or equivalent) unless the user explicitly overrides |
+| Prior merge abort | If `/ocabot merge` already **aborted** (failed bump-branch checks) and there is **no new commit since that failure**, blocked — do not comment `/ocabot merge` again |
 
 **One approval only** after 5 days → blocked (need a second review).
 

@@ -140,6 +140,8 @@ Skip logins that contain `bot` (for example `OCA-git-bot`, `oca-transbot`). If n
 
 Candidates are the module maintainers when that list is non-empty, otherwise the PSC members from Step 5.
 
+**A pull request cannot be assigned to its author.** Drop the PR author's login from the candidate list (issues have no such rule). If that empties the maintainer list, use the PSC list from Step 5, still excluding the author. If nobody remains, stop and report that. Do not assign the authenticated user as a fallback.
+
 For each candidate, count open issues and pull requests already assigned to them in this repository. GitHub's issue search includes both:
 
 ```bash
