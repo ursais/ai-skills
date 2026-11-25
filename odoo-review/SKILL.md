@@ -68,7 +68,7 @@ Labels and the milestone (Gate B) are not the review; they may be set before it.
 
 1. **Gate A first** — score relevance; deep-review only if **≥ 40** ([references/relevance-score.md](references/relevance-score.md))  
 2. When posting: one GitHub **review** at the end of the run — `REQUEST_CHANGES` or `COMMENT` only. Never `APPROVE`. If **not to post**, chat-only checklist and no PR changes  
-3. PRs with score **≥ 40** get packaging triage: `needs review`, `series:$target_ver`, `mod:$module`, **milestone `$target_ver`** — never skip milestone ([oca-pr](../shared/oca-pr.md))  
+3. PRs with score **≥ 40** get packaging triage: `needs review`, `series:$target_ver`, `mod:$module`, **milestone `$target_ver`** — never skip milestone, and never skip `needs review` just because `series:` / `mod:` already exist ([oca-pr](../shared/oca-pr.md))  
 4. `$target_ver` = PR `baseRefName`  
 5. **Review before assign.** Someone else's `APPROVED` does not skip Gates A–C and does not mean assign. Run this skill fully, then hand off to `odoo-assign` only after Gate C.  
 6. **When Gate C passes**, post a `COMMENT` that a human should test and approve, then follow [odoo-assign](../odoo-assign/SKILL.md) for this pull request. Do not call the assignees API here. Do not approve  
@@ -111,7 +111,7 @@ Stop. Report to the user. **Do not** set assignees and **do not** run `odoo-assi
 
 ## Step 2 — Gate B: packaging (score ≥ 40)
 
-Set labels + milestone now ([oca-pr](../shared/oca-pr.md)):
+Set labels + milestone now ([oca-pr](../shared/oca-pr.md)). **Always** run this, even when `series:` or `mod:` is already present — still set the milestone and add `needs review` if missing. Do not treat a partial label set as done.
 
 ```bash
 target_ver="$BASE_BRANCH"
@@ -126,11 +126,14 @@ gh api -X PATCH "repos/$OWNER/$repo/issues/$PR_NUMBER" -F milestone="$MILESTONE_
 gh api -X POST "repos/$OWNER/$repo/issues/$PR_NUMBER/labels" \
   -f 'labels[]=needs review' \
   -f "labels[]=series:${target_ver}" \
-  -f "labels[]=mod:${module}" || true
+  -f "labels[]=mod:${module}"
 
 gh pr view "$PR_NUMBER" --repo "$OWNER/$repo" --json milestone \
   --jq '.milestone.title // empty' | grep -qx "$target_ver" \
   || { echo "ERROR: milestone $target_ver not set"; exit 1; }
+gh pr view "$PR_NUMBER" --repo "$OWNER/$repo" --json labels \
+  --jq '[.labels[].name] | index("needs review") // empty' \
+  | grep -q . || { echo "ERROR: needs review not set"; exit 1; }
 ```
 
 Do **not** set assignees here. Assignment happens only after Gate C passes, and only in `odoo-assign`.
