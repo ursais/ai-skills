@@ -23,10 +23,13 @@ Ask for the URL if it is missing. Requires `gh` authenticated with permission to
 
 Called from [odoo-fix](../odoo-fix/SKILL.md) when that skill stops without a fix, and from [odoo-review](../odoo-review/SKILL.md) when Gate C is ready for human testing. The same rules apply when the user runs this skill directly.
 
+A **pull request** must already have been reviewed by the person running this skill. Someone else's `APPROVED` is not enough. Review first (`/odoo-review`), then assign for testing. Issues have no review gate.
+
 ## Workflow
 
 ```
 Step 1  Parse the issue or pull request
+Step 1b Pull request only: stop unless the authenticated user already reviewed it
 Step 2  Resolve the module and the series branch
 Step 3  If there is no milestone and no labels, set both
 Step 4  Read maintainers from __manifest__.py
@@ -45,6 +48,22 @@ gh issue view "$NUMBER" --repo "OCA/$repo" --json number,title,labels,milestone,
 gh pr view "$NUMBER" --repo "OCA/$repo" \
   --json number,baseRefName,headRefName,headRepositoryOwner,files,labels,assignees
 ```
+
+### Step 1b — Pull requests: review first
+
+Skip this step when the input is an issue.
+
+A pull request is assigned for **testing**, after a code review. Do not assign it if the authenticated user has not reviewed it yet — including when someone else already `APPROVED`.
+
+```bash
+ME=$(gh api user --jq .login)
+gh api "repos/OCA/$repo/pulls/$NUMBER/reviews" \
+  --jq "[.[] | select(.user.login==\"$ME\") | .state]"
+```
+
+If that list is empty, **stop**. Do not set milestone, labels, or assignee. Tell the user to run `/odoo-review` on this pull request first.
+
+When this skill is called from [odoo-review](../odoo-review/SKILL.md) after Gate C posted the ready `COMMENT`, that review counts and this step passes.
 
 ### Step 2 — Module and series
 

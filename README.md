@@ -36,7 +36,7 @@ ai-skills/
 
 ### Process
 
-`odoo-report` opens a bug issue from a stacktrace, a log, or notes, with the series milestone and the `bug` label. An issue becomes a pull request, or it is assigned when it cannot be fixed. A pull request is reviewed, then assigned for a person to test. No skill approves. A human approves after testing, and `odoo-merge` runs only when the merge gates already pass.
+`odoo-report` opens a bug issue from a stacktrace, a log, or notes, with the series milestone and the `bug` label. An issue becomes a pull request, or it is assigned when it cannot be fixed. A pull request is **reviewed first**, then assigned for a person to test. Someone else's `APPROVED` does not skip that review. No skill approves. A human approves after testing, and `odoo-merge` runs only when the merge gates already pass.
 
 `odoo-migrate` ports a module that already exists onto a newer series. `odoo-rebase` updates a pull request on your fork when that branch is behind its base. `odoo-translate` updates translations: Weblate publishes them on OCA, and a local `i18n/` change becomes a pull request. Neither rebase nor translate assigns or approves.
 

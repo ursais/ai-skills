@@ -68,10 +68,11 @@ Labels and the milestone (Gate B) are not the review; they may be set before it.
 2. When posting: one GitHub **review** at the end of the run — `REQUEST_CHANGES` or `COMMENT` only. Never `APPROVE`. If **not to post**, chat-only checklist and no PR changes  
 3. PRs with score **≥ 40** get packaging triage: `needs review`, `series:$target_ver`, `mod:$module`, **milestone `$target_ver`** — never skip milestone ([oca-pr](../shared/oca-pr.md))  
 4. `$target_ver` = PR `baseRefName`  
-5. **When Gate C passes**, post a `COMMENT` that a human should test and approve, then follow [odoo-assign](../odoo-assign/SKILL.md) for this pull request. Do not call the assignees API here. Do not approve  
-6. If items remain → **once, same step**: milestone `$target_ver` + `needs fixing` + `REQUEST_CHANGES` with `### Left to fix` only; **do not** run `odoo-assign`  
-7. Read [architecture-relevance.md](references/architecture-relevance.md) only when the diff adds or splits a module  
-8. Bugbot, Security Review, and Performance run only when the user asks for that deep review  
+5. **Review before assign.** Someone else's `APPROVED` does not skip Gates A–C and does not mean assign. Run this skill fully, then hand off to `odoo-assign` only after Gate C.  
+6. **When Gate C passes**, post a `COMMENT` that a human should test and approve, then follow [odoo-assign](../odoo-assign/SKILL.md) for this pull request. Do not call the assignees API here. Do not approve  
+7. If items remain → **once, same step**: milestone `$target_ver` + `needs fixing` + `REQUEST_CHANGES` with `### Left to fix` only; **do not** run `odoo-assign`  
+8. Read [architecture-relevance.md](references/architecture-relevance.md) only when the diff adds or splits a module  
+9. Bugbot, Security Review, and Performance run only when the user asks for that deep review  
 
 
 
