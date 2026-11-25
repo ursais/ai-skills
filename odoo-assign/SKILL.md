@@ -31,7 +31,7 @@ A **pull request** must already have been reviewed by the person running this sk
 Step 1  Parse the issue or pull request
 Step 1b Pull request only: stop unless the authenticated user already reviewed it
 Step 2  Resolve the module and the series branch
-Step 3  If there is no milestone and no labels, set both
+Step 3  Set missing milestone and required labels (never skip because some labels already exist)
 Step 4  Read maintainers from __manifest__.py
 Step 5  If none, load the repository PSC
 Step 6  Pick the login with the fewest open assignments in this repo
@@ -74,18 +74,18 @@ When this skill is called from [odoo-review](../odoo-review/SKILL.md) after Gate
 
 One addon only. If the diff touches several addons, or the issue does not name exactly one module, stop and ask which module. Do not guess an assignee. If an issue still has no series, stop and ask. Do not guess the series.
 
-### Step 3 — Milestone and labels when both are missing
+### Step 3 — Milestone and required labels
 
-Run this step only when `milestone` is null **and** `labels` is empty. If either is already set, leave milestone and labels unchanged and continue at Step 4.
+**Always** set the packaging fields that are still missing. Do **not** skip this step because some labels already exist (field-service #1726 had `series:19.0` and `mod:fieldservice_account`, so the old "both missing" gate left it with no milestone and no `needs review`).
 
 Use `gh api` REST, not `gh issue edit` or `gh pr edit`. Same packaging as [odoo-review](../odoo-review/SKILL.md) Gate B and [oca-pr](../shared/oca-pr.md):
 
 | Field | Value |
 |-------|--------|
-| Milestone | `$target_ver` (create it open if missing) |
-| Labels | add `needs review`, `series:$target_ver`, `mod:$module` |
+| Milestone | `$target_ver` (create it open if missing). Set it even when labels are already present. |
+| Labels | **add** `needs review`, `series:$target_ver`, `mod:$module` if they are not already on the issue/PR |
 
-Create a missing label before adding it. Copy the color of an existing `series:` label, or use `1D76DB`. `mod:` is `5319E7`. `needs review` is `fbca04` when the repo has no `needs review` label yet. Do not remove labels.
+Create a missing label before adding it. Copy the color of an existing `series:` label, or use `1D76DB`. `mod:` is `5319E7`. `needs review` is `fbca04` when the repo has no `needs review` label yet. Do not remove labels. Extra labels (`approved`, `needs fixing`, …) stay.
 
 ```bash
 MILESTONE_NUM=$(gh api "repos/OCA/$repo/milestones" --paginate \

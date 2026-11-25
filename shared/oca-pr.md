@@ -11,6 +11,8 @@ Used after local validation and push to `$fork_owner` ([fork-remote.md](fork-rem
 | `series:${target_ver}` | **`needs fixing`** when requesting changes (keep `needs review`) |
 | `mod:${module}` only | |
 
+Existing `series:` / `mod:` labels do **not** skip this. Still set the milestone and add `needs review` when they are missing.
+
 Do not set assignees. Only [odoo-assign](../odoo-assign/SKILL.md) does that.  
 Reviewer: `$PR_REVIEWER` (profile `maintainer`, otherwise `gh api user -q .login`).
 
