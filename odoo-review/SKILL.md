@@ -58,7 +58,9 @@ In one run, **one review** per PR. Do not also post an issue comment. Do not req
 
 If this run already submitted a review, stop. Put any later finding in the user report only. Do not post a second review or comment to correct it.
 
-A **later** run that re-reviews an existing checklist edits that review body (check off done items, add only new remaining items). It does not submit a second review and does not also comment.
+A **later** run that re-reviews an existing checklist edits that review body (check off done items, add only new remaining items). It does not submit a second `REQUEST_CHANGES` and does not also comment **while items remain**.
+
+If a later run finds **every** prior checklist item done and Gate C now passes: check off the old review (or dismiss it), then post the ready `COMMENT` below and follow `odoo-assign`. That COMMENT is the one review for this run.
 
 Labels and the milestone (Gate B) are not the review; they may be set before it. Follow `odoo-assign` only together with the final ready decision, never before the agents return.
 
@@ -223,7 +225,7 @@ If the user says **not to post**: return that same `### Left to fix` checklist i
 Post one `COMMENT` review. Do not approve. Then follow [odoo-assign](../odoo-assign/SKILL.md) for this pull request in the same run. Do not call the assignees API here.
 
 ```json
-{"event":"COMMENT","body":"Ready for human testing. A maintainer approves after testing."}
+{"event":"COMMENT","body":"Automated review has been completed successfully. This pull request is ready for human testing. A maintainer should test/review before approving."}
 ```
 
 | Gate C | `event` |
